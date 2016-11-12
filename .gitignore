@@ -1,0 +1,14 @@
+
+#Ignore Auto Generated javascript file in typescript compiling in Augular 2
+
+DMS.Web/system-config.js*
+DMS.Web/app/**/*.js
+DMS.Web/app/**/*.map
+DMS.Web/node_modules
+DMS.Web/bower_components
+DMS.Web/aot/*
+DMS.Web/dist/*
+DMS.Web/npm-debug.log*
+
+# Visual Studio 2015 cache/options directory
+.vs/
