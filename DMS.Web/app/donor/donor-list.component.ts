@@ -17,7 +17,7 @@ export class DonorListComponent implements OnInit {
     }
 
     getDonors(): void {
-        this.donorService.getDonors2().then(donors => this.donors = donors);
+        this.donorService.getDonors().then(donors => this.donors = donors);
     }
 
     ngOnInit(): void {

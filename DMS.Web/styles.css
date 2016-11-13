@@ -1,9 +1,16 @@
 ﻿/* Master Styles */
-body {
+/*body {
   margin: 2em;
-}
+}*/
 
-h1 {
+
+/*Bootstrap default styles overides*/
+.page-header {
+    margin-top:20px;
+}
+/************************************/
+
+/*h1 {
   color: #369;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 250%;
@@ -13,4 +20,4 @@ h2, h3 {
   color: #444;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: lighter;
-}
+}*/

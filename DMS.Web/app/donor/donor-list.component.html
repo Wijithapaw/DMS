@@ -1,6 +1,14 @@
-﻿<h1> Donors </h1>
-<ul>
-    <li *ngFor="let donor of donors">        
+﻿<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">
+            DMS
+            <small>Donors</small>
+        </h1>
+    </div>
+</div>
+
+<ul class="list-group">
+    <li class="list-group-item" *ngFor="let donor of donors">        
         {{donor.firstName}} {{donor.lastName}}
     </li>
 </ul>
