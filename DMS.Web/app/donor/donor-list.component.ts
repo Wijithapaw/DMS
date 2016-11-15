@@ -11,6 +11,7 @@ import { DonorService } from '../services/donor.service'
 export class DonorListComponent implements OnInit {
 
     donors: Donor[];
+    subtitle = 'Donors';
 
     constructor(private donorService: DonorService) {
 

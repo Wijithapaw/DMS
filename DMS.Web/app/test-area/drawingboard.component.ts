@@ -6,5 +6,5 @@
 })
 
 export class DrawingboardComponent {
-
+    subtitle = 'Drawingboard';
 }

@@ -1,22 +1,18 @@
-﻿<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header">
-            DMS
-            <small>Projects</small>
-        </h1>
-    </div>
-</div>
+﻿<page-title [subtitle]="subtitle"></page-title>
+<button class="btn btn-primary" [routerLink]="['/project/new']">New</button>
 <table class="table table-striped">
     <tr>
         <th>Title</th>
         <th>Description</th>
         <th>Start Date</th>
         <th>End Date</th>
+        <th></th>
     </tr>
     <tr *ngFor="let project of projects">
         <td> {{project.title}} </td> 
         <td> {{project.description}} </td> 
         <td> {{project.startDate}} </td> 
         <td> {{project.endDate}}</td>
+        <td> <a [routerLink]="['/project/edit', project.id ]"> edit </a> </td>
     </tr>
 </table>

@@ -1,0 +1,12 @@
+﻿<page-title [subtitle]="subtitle"></page-title>
+
+<form *ngIf="project"  (ngSubmit)="onSubmit()" #editForm="ngForm">
+    <div class="form-group">
+        <label> Title: </label>
+        <input type="text" class="form-control"  [(ngModel)]="project.title" name="title" #title="ngModel" required />
+        <div [hidden]="title.valid" class="alert alert-danger"> Title is requred </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-default" [disabled]="!editForm.form.valid"> Save </button>
+    <button type="button" class="btn" [routerLink]="['/projects']"> Back </button>
+</form>

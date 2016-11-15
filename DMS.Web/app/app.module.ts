@@ -19,11 +19,16 @@ import { DonorListComponent } from './donor/donor-list.component';
 import { ProjectListComponent } from './project/project-list.component';
 import { ModalTestComponent } from './test-area/modal-test.component';
 import { DrawingboardComponent } from './test-area/drawingboard.component';
+import { HighlightDirective } from './directives/highlight.directive';
+import { TitleComponent } from './common/title.component';
+import { EditProjectComponent } from './project/edit-project.component'
+
 
 import { DonorService } from './services/donor.service';
 import { ProjectService } from './services/project.service';
 import { ApiService} from './services/api.service';
 import { BaseService } from './services/base.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
     imports: [
@@ -40,13 +45,17 @@ import { BaseService } from './services/base.service';
         DonorListComponent,
         ProjectListComponent,
         DrawingboardComponent,
-        ModalTestComponent
+        ModalTestComponent,
+        HighlightDirective,
+        TitleComponent,
+        EditProjectComponent
     ],
     providers: [
         BaseService,
+        UserService,
         ApiService,
         DonorService,
-        ProjectService
+        ProjectService,
     ],
     bootstrap: [AppComponent]
 })
