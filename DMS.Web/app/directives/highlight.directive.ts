@@ -1,11 +1,15 @@
-﻿import { Directive, ElementRef, Renderer } from '@angular/core';
+﻿import { Directive, ElementRef, Renderer , OnInit} from '@angular/core';
 
-@Directive({ selector: 'highlight' })
+@Directive({ selector: '[my-highlight]' })
 
-export class HighlightDirective {
-    constructor(renderer: Renderer, el: ElementRef) {
-        renderer.setElementStyle(el.nativeElement, 'background-color', 'gold');
-        console.log(
-            `* AppRoot highlight called for ${el.nativeElement.tagName}`);
+export class HighlightDirective implements OnInit {
+    constructor(private renderer: Renderer, private el: ElementRef) {
+        
+    }
+
+    ngOnInit() {
+        console.log('1212');
+        this.renderer.setElementStyle(this.el.nativeElement, 'backgroundColor', 'yellow');
+        this.renderer.setText(this.el.nativeElement, 'Wijitha Wijenayake');        
     }
 }
