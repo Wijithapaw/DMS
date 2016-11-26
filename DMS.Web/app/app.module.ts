@@ -25,6 +25,7 @@ import { EditProjectComponent } from './project/edit-project.component'
 
 
 import { SharedModule } from './shared/shared.module';
+import { DonorsModule } from './donors/donors.module';
 
 
 import { DonorService } from './services/donor.service';
@@ -41,7 +42,8 @@ import { UserService } from './services/user.service';
         routing,
         // InMemoryWebApiModule.forRoot(InMemoryDataService),
         NgbModule.forRoot(),
-        SharedModule
+        SharedModule,
+        DonorsModule
     ],
     declarations: [
         AppComponent,
