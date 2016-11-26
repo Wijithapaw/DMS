@@ -4,19 +4,18 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { Project } from '../models/project';
-import { ApiService} from './api.service'
-import { BaseService } from './base.service';
+import { DataService} from '../../shared/services/data.service'
 
 @Injectable()
-export class ProjectService extends BaseService {
+export class ProjectService  {
 
-    constructor(private apiService: ApiService) { super(); }
+    constructor(private dataService: DataService) { }
 
     getProjects(): Promise<Project[]> {
-        return this.apiService.get('projects', '')
+        return this.dataService.get('projects', '')
             .toPromise()
             .then(response => response.json().data as Project[])
-            .catch(this.handleError);
+            //.catch(this.handleError);
     }
 
     getProject(id: number): Promise<Project> {

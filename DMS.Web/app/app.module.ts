@@ -11,17 +11,15 @@ import { AppComponent} from './app.component';
 import { routing } from './app.routing';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ProjectListComponent } from './project/project-list.component';
 import { ModalTestComponent } from './test-area/modal-test.component';
 import { DrawingboardComponent } from './test-area/drawingboard.component';
 import { HighlightDirective } from './directives/highlight.directive';
 import { TitleComponent } from './common/title.component';
-import { EditProjectComponent } from './project/edit-project.component'
 
 import { SharedModule } from './shared/shared.module';
 import { DonorsModule } from './donors/donors.module';
+import { ProjectsModule } from './projects/projects.module';
 
-import { ProjectService } from './services/project.service';
 import { ApiService} from './services/api.service';
 import { BaseService } from './services/base.service';
 import { UserService } from './services/user.service';
@@ -34,23 +32,21 @@ import { UserService } from './services/user.service';
         routing,
         NgbModule.forRoot(),
         SharedModule,
-        DonorsModule
+        DonorsModule,
+        ProjectsModule
     ],
     declarations: [
         AppComponent,
         DashboardComponent,
-        ProjectListComponent,
         DrawingboardComponent,
         ModalTestComponent,
         HighlightDirective,
-        TitleComponent,
-        EditProjectComponent
+        TitleComponent
     ],
     providers: [
         BaseService,
         UserService,
-        ApiService,
-        ProjectService,
+        ApiService
     ],
     bootstrap: [AppComponent]
 })

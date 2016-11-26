@@ -1,18 +1,20 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ProjectService } from '../services/project.service'
-import { Project } from '../models/project'
+import { ProjectService } from './services/project.service'
+import { Project } from './models/project'
 
 @Component({
-    selector: 'project-list',
-    templateUrl: 'app/project/project-list.component.html'
+    moduleId: module.id,
+    selector: 'dms-projects',
+    templateUrl: 'projects.component.html'
 })
 
-export class ProjectListComponent implements OnInit {
+export class ProjectsComponent implements OnInit {
 
     projects: Project[];
     subtitle = "Projects";
+
     constructor(private projectService: ProjectService, private router: Router) { }
 
     getProjects(): void {
