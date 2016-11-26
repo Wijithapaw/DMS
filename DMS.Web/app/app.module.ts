@@ -8,8 +8,8 @@ import { HttpModule } from '@angular/http';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
 
 //In-memory data service for initial phase of development and mockup
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { InMemoryDataService } from './services/in-memory-data.service';
+// import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+// import { InMemoryDataService } from './services/in-memory-data.service';
 
 import { AppComponent} from './app.component';
 import { routing } from './app.routing';
@@ -24,6 +24,9 @@ import { TitleComponent } from './common/title.component';
 import { EditProjectComponent } from './project/edit-project.component'
 
 
+import { SharedModule } from './shared/shared.module';
+
+
 import { DonorService } from './services/donor.service';
 import { ProjectService } from './services/project.service';
 import { ApiService} from './services/api.service';
@@ -36,8 +39,9 @@ import { UserService } from './services/user.service';
         FormsModule,
         HttpModule,
         routing,
-        InMemoryWebApiModule.forRoot(InMemoryDataService),
-        NgbModule.forRoot()
+        // InMemoryWebApiModule.forRoot(InMemoryDataService),
+        NgbModule.forRoot(),
+        SharedModule
     ],
     declarations: [
         AppComponent,

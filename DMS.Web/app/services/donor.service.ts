@@ -4,17 +4,18 @@ import 'rxjs/add/operator/toPromise';
 import { Donor } from '../models/donor';
 import { ApiService} from './api.service'
 import { BaseService } from './base.service'
+import { DataService } from '../shared/services/data.service';
 
 @Injectable()
-export class DonorService extends BaseService {
+export class DonorService {
 
-    constructor(private apiService: ApiService) { super(); }
+    constructor(private dataService: DataService) {  }
 
     getDonors(): Promise<Donor[]> {
-        return this.apiService.get('donors', '')
+        return this.dataService.get('donors', '')
             .toPromise()
             .then(response => response.json().data as Donor[])
-            .catch(this.handleError);
+            //.catch(this.handleError);
     }
 
     getDonors2(): Promise<Donor[]> {
