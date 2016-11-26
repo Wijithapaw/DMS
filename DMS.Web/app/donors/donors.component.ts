@@ -1,6 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 
-import { Donor } from '../models/donor';
+import { Donor } from './models/donor';
 import { DonorService } from './services/donor.service'
 
 @Component({

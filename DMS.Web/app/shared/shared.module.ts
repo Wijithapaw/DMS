@@ -8,6 +8,7 @@ import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './services/in-memory-data.service';
 
 import { DataService } from './services/data.service';
+import { PageHeaderComponent } from './page-header/page-header.component';
 
 @NgModule({
     imports: [
@@ -17,7 +18,7 @@ import { DataService } from './services/data.service';
         InMemoryWebApiModule.forRoot(InMemoryDataService)
     ],
     declarations: [
-
+        PageHeaderComponent
     ],
     providers: [
         DataService
@@ -25,7 +26,8 @@ import { DataService } from './services/data.service';
     exports: [
         BrowserModule,
         CommonModule,
-        FormsModule
+        FormsModule,
+        PageHeaderComponent
     ]
 })
 

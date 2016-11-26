@@ -6,14 +6,6 @@ import { DrawingboardComponent } from './test-area/drawingboard.component'
 
 const appRoutes: Routes = [
     {
-        path: 'dashboard',
-        component: DashboardComponent
-    },
-    {
-        path: 'drawingboard',
-        component: DrawingboardComponent
-    },
-    {
         path: '',
         redirectTo: 'dashboard',
         pathMatch: 'full'

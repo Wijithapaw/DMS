@@ -22,10 +22,10 @@ export class EditProjectComponent implements OnInit {
         this.route.params.forEach((params: Params) =>
         {
             let id = +params['id'];
-            this.projectService.getProject(id).then(project => this.project = project);
+            this.projectService.getProject(id).then(project => this.project = (project != null ? project : new Project()));
         });
     }
-
+ 
     onSubmit(): void {
         alert(this.project.title);
     }

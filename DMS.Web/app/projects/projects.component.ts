@@ -17,17 +17,12 @@ export class ProjectsComponent implements OnInit {
 
     constructor(private projectService: ProjectService, private router: Router) { }
 
-    getProjects(): void {
+    private getProjects(): void {
         this.projectService.getProjects().then(projects => this.projects = projects);
     }
 
     createNew(): void {
-        let link = ['/project/new', 0];
-        this.router.navigate(link);
-    }
-
-    edit(id: number): void {
-        let link = ['/project/edit', id];
+        let link = ['/project/new'];
         this.router.navigate(link);
     }
 
