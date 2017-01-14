@@ -12,15 +12,17 @@ import { SharedModule } from './shared/shared.module';
 import { DonorsModule } from './donors/donors.module';
 import { ProjectsModule } from './projects/projects.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
     imports: [
+        CoreModule,
+        DashboardModule,
+        DonorsModule,
         HttpModule,
         routing,
         NgbModule.forRoot(),
         SharedModule,
-        DashboardModule,
-        DonorsModule,
         ProjectsModule
     ],
     declarations: [
