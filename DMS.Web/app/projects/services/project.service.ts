@@ -14,8 +14,8 @@ export class ProjectService  {
     getProjects(): Promise<Project[]> {
         return this.dataService.get('projects', '')
             .toPromise()
-            .then(response => response.json().data as Project[])
-            //.catch(this.handleError);
+            .then(response=>  response.json() as Project[])
+            .catch((reason) => console.error(reason));
     }
 
     getProject(id: number): Promise<Project> {

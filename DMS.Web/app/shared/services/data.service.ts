@@ -2,17 +2,17 @@
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
+import { AppConfigService } from '../../core/services/app-config.service'
+
 @Injectable()
 export class DataService {
 
-    apiRootUrl = 'app'
-
-    constructor(private http: Http) {
+    constructor(private http: Http, private appConfigService: AppConfigService) {
         
     }
 
     private getUrl(controler: string, action: string): string {
-        return this.pathCombine(this.apiRootUrl, this.pathCombine(controler, action));
+        return this.pathCombine(this.appConfigService.apiUrl, this.pathCombine(controler, action));
     }
 
     private pathCombine(part1: string, part2: string): string {

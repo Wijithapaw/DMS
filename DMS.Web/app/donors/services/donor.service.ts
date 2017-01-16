@@ -12,7 +12,7 @@ export class DonorService {
     getDonors(): Promise<Donor[]> {
         return this.dataService.get('donors', '')
             .toPromise()
-            .then(response => response.json().data as Donor[])
+            .then(response => response.json() as Donor[])
             //.catch(this.handleError);
     }
 
