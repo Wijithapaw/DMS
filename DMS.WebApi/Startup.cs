@@ -41,6 +41,7 @@ namespace DMS.WebApi
             
             services.AddScoped<IProjectsService, ProjectsService>();
             services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
+            services.AddScoped<IDonorsService, DonorsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

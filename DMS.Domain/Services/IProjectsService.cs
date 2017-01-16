@@ -1,4 +1,5 @@
-﻿using DMS.Domain.Entities;
+﻿using DMS.Domain.Dtos;
+using DMS.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DMS.Domain.Services
 
         Project Get(int id);
 
-        ICollection<Project> GetAll();
+        ICollection<ProjectDto> GetAll();
 
         ICollection<Project> GetAll(string category);
 

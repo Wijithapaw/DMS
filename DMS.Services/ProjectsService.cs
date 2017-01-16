@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DMS.Domain.Entities;
 using DMS.Domain;
 using DMS.Data;
+using DMS.Domain.Dtos;
 
 namespace DMS.Services
 {
@@ -34,9 +35,19 @@ namespace DMS.Services
             return _dataContext.Projects.Find(id);
         }
 
-        public ICollection<Project> GetAll()
+        public ICollection<ProjectDto> GetAll()
         {
-            return _dataContext.Projects.ToList();
+            var projects = _dataContext.Projects
+                    .Select(p => new ProjectDto
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        Description = p.Description,
+                        StartDate = p.StartDateUtc,
+                        EndDate = p.EndDateUtc
+                    }).ToList();
+
+            return projects;
         }
 
         public ICollection<Project> GetAll(string category)

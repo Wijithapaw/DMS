@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using DMS.Domain.Services;
-using DMS.Domain.Entities;
 using DMS.Domain.Dtos;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,42 +11,33 @@ using DMS.Domain.Dtos;
 namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    public class ProjectsController : Controller
+    public class DonorsController : Controller
     {
-        private IProjectsService _projectsService;
+        IDonorsService _donorService;
 
-        public ProjectsController(IProjectsService projectsService)
+        public DonorsController(IDonorsService donorService)
         {
-            _projectsService = projectsService;
+            _donorService = donorService;
         }
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<ProjectDto> Get()
+        public IEnumerable<PersonDto> Get()
         {
-            return _projectsService.GetAll();            
-        }
-
-        [Route("GetByCategory")]
-        public IEnumerable<Project> Get([FromQuery] string category)
-        {
-            return _projectsService.GetAll(category);
+            return _donorService.GetAll();
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Project Get(int id)
+        public string Get(int id)
         {
-            var project = _projectsService.Get(id);
-            return project;
+            return "value";
         }
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Project project)
+        public void Post([FromBody]string value)
         {
-            _projectsService.Create(project);
-            return Ok();
         }
 
         // PUT api/values/5
