@@ -6,6 +6,21 @@
         <input type="text" class="form-control"  [(ngModel)]="project.title" name="title" #title="ngModel" required />
         <div [hidden]="title.valid" class="alert alert-danger"> Title is requred </div>
     </div>
+    <div class="form-group">
+        <label> Description: </label>
+        <input type="text" class="form-control"  [(ngModel)]="project.description" name="description" #description="ngModel" required />
+        <div [hidden]="title.description" class="alert alert-danger"> Description is requred </div>
+    </div>
+    <div class="form-group">
+        <label> Start Date: </label>
+        <input type="date" class="form-control"  [(ngModel)]="project.startDate" name="startDate" #startDate="ngModel" required />
+        <div [hidden]="title.startDate" class="alert alert-danger"> Start Date is requred </div>
+    </div>
+
+    <div class="form-group">
+        <label> End Date: </label>
+        <input type="date" class="form-control"  [(ngModel)]="project.endDate" name="endDate" #endDate="ngModel" />
+    </div>
     <br />
     <button type="submit" class="btn btn-default" [disabled]="!editForm.form.valid"> Save </button>
     <button type="button" class="btn" [routerLink]="['/projects']"> Back </button>

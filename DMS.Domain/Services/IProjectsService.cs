@@ -13,12 +13,12 @@ namespace DMS.Domain.Services
 
         void Delete(int id);
 
-        Project Get(int id);
+        ProjectDto Get(int id);
 
         ICollection<ProjectDto> GetAll();
 
         ICollection<Project> GetAll(string category);
 
-        Project Update(Project project);
+        void Update(ProjectDto project);
     }
 }

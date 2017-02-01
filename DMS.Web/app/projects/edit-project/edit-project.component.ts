@@ -27,7 +27,9 @@ export class EditProjectComponent implements OnInit {
     }
  
     onSubmit(): void {
-        alert(this.project.title);
+        this.projectService.updateProject(this.project)
+            .then((response) => { alert('Updated'); });
+            
     }
 
     cancel() : void {

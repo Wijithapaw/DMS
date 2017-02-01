@@ -10,7 +10,7 @@ export class DonorService {
     constructor(private dataService: DataService) {  }
 
     getDonors(): Promise<Donor[]> {
-        return this.dataService.get('donors', '')
+        return this.dataService.get('donors')
             .toPromise()
             .then(response => response.json() as Donor[])
             //.catch(this.handleError);

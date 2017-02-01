@@ -36,7 +36,7 @@ namespace DMS.WebApi.Controllers
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public Project Get(int id)
+        public ProjectDto Get(int id)
         {
             var project = _projectsService.Get(id);
             return project;
@@ -52,8 +52,9 @@ namespace DMS.WebApi.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]ProjectDto project)
         {
+            _projectsService.Update(project);
         }
 
         // DELETE api/values/5

@@ -30,9 +30,17 @@ namespace DMS.Services
             throw new NotImplementedException();
         }
 
-        public Project Get(int id)
+        public ProjectDto Get(int id)
         {
-            return _dataContext.Projects.Find(id);
+            return _dataContext.Projects.Where(p => p.Id == id)
+                    .Select(p => new ProjectDto
+                    {
+                        Id = p.Id,
+                        Title = p.Title,
+                        Description = p.Description,
+                        StartDate = p.StartDateUtc,
+                        EndDate = p.EndDateUtc
+                    }).FirstOrDefault();
         }
 
         public ICollection<ProjectDto> GetAll()
@@ -60,9 +68,20 @@ namespace DMS.Services
             return projects;
         }
 
-        public Project Update(Project project)
+        public void Update(ProjectDto projectDto)
         {
-            throw new NotImplementedException();
+            var project = new Project
+            {
+                Id = projectDto.Id,
+                Title = projectDto.Title,
+                Description = projectDto.Description,
+                StartDateUtc = projectDto.StartDate,
+                EndDateUtc = projectDto.EndDate
+            };
+
+            _dataContext.Update(project);
+
+            _dataContext.SaveChanges();
         }
     }
 }

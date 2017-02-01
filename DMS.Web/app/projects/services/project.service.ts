@@ -12,14 +12,21 @@ export class ProjectService  {
     constructor(private dataService: DataService) { }
 
     getProjects(): Promise<Project[]> {
-        return this.dataService.get('projects', '')
+        return this.dataService.get('projects')
             .toPromise()
             .then(response=>  response.json() as Project[])
             .catch((reason) => console.error(reason));
     }
 
     getProject(id: number): Promise<Project> {
-        return this.getProjects()
-            .then(projects => projects.find(project => project.id === id));
+        return this.dataService.get('projects', '', id)
+            .toPromise()
+            .then(response => response.json() as Project)
+    }
+
+    updateProject(project: Project) {
+        return this.dataService.put('projects', '', project.id, JSON.stringify(project))
+            .toPromise()
+            .then((response) => {return true;});
     }
 }

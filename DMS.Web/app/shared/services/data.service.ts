@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import { AppConfigService } from '../../core/services/app-config.service'
@@ -19,8 +19,29 @@ export class DataService {
         return part1 + (part2 != '' ? '/' + part2 : '');
     }
 
-    get(controler: string, action: string): Observable<Response> {
+    get(controler: string, action: string = '', id: number = 0): Observable<Response> {
         let url = this.getUrl(controler, action);
+        if(id > 0)
+            url += '/' + id;
         return this.http.get(url);
+    }
+
+    put(controler: string, action: string, id: number, jsonData : string) : Observable<Response>{
+        console.log(jsonData);
+
+        let headers = new Headers({ 'Content-Type': 'application/json; charset=utf-8' });
+        let options = new RequestOptions({ headers: headers });
+
+        let url = this.getUrl(controler, action);
+            url += '/' + id;
+       
+        return this.http.put(url,  jsonData, options)
+             .map(res => res.json());
+             
+         
+    }
+
+    handleError(error) {
+        console.error(error);
     }
 }
