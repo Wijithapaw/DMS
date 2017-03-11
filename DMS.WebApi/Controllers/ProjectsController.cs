@@ -29,7 +29,7 @@ namespace DMS.WebApi.Controllers
         }
 
         [Route("GetByCategory")]
-        public IEnumerable<Project> Get([FromQuery] string category)
+        public IEnumerable<ProjectDto> Get([FromQuery] string category)
         {
             return _projectsService.GetAll(category);
         }

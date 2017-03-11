@@ -17,7 +17,7 @@ namespace DMS.Domain.Services
 
         ICollection<ProjectDto> GetAll();
 
-        ICollection<Project> GetAll(string category);
+        ICollection<ProjectDto> GetAll(string category);
 
         void Update(ProjectDto project);
     }

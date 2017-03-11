@@ -20,6 +20,13 @@ namespace DMS.Data
 
         public DbSet<ProjectCategory> ProjectCategories { get; set; }
 
+        public DbSet<Donor> Donors { get; set; }
+
+        public DbSet<Admin> Admins { get; set; }
+
+        public DbSet<Donee> Donees { get; set; }
+
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

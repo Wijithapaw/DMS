@@ -38,6 +38,7 @@ namespace DMS.Services
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
+                        ProjectCategory = p.ProjectCategory.ShortDescription,
                         StartDate = p.StartDateUtc,
                         EndDate = p.EndDateUtc
                     }).FirstOrDefault();
@@ -51,6 +52,7 @@ namespace DMS.Services
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
+                        ProjectCategory = p.ProjectCategory.ShortDescription,
                         StartDate = p.StartDateUtc,
                         EndDate = p.EndDateUtc
                     }).ToList();
@@ -58,12 +60,19 @@ namespace DMS.Services
             return projects;
         }
 
-        public ICollection<Project> GetAll(string category)
+        public ICollection<ProjectDto> GetAll(string category)
         {
-            var projects = _dataContext.ProjectCategories.Where(c => c.ShortDescription == category).Select(c => c.Projects).FirstOrDefault();
-                 
-            
-            //var projs = project.Projects.ToList();                 
+            var projects = _dataContext.Projects
+                    .Where(p => p.ProjectCategory.ShortDescription == category)
+                     .Select(p => new ProjectDto
+                     {
+                         Id = p.Id,
+                         Title = p.Title,
+                         Description = p.Description,
+                         ProjectCategory = p.ProjectCategory.ShortDescription,
+                         StartDate = p.StartDateUtc,
+                         EndDate = p.EndDateUtc
+                     }).ToList();
 
             return projects;
         }

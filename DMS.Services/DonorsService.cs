@@ -4,11 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DMS.Domain.Dtos;
+using DMS.Data;
 
 namespace DMS.Services
 {
     public class DonorsService : IDonorsService
     {
+        private DataContext _dataContext;
+
+        public DonorsService(DataContext dataContext)
+        {
+            _dataContext = dataContext;
+        }
+
         public void Create(PersonDto donor)
         {
             throw new NotImplementedException();
@@ -21,15 +29,30 @@ namespace DMS.Services
 
         public PersonDto Get(int id)
         {
-            throw new NotImplementedException();
+            var donor = _dataContext.Donors
+                .Where(d => d.Id == id)
+                .Select(d => new PersonDto
+                {
+                    Id = d.Id,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    Birthday = d.Birthday,
+                    Email = d.Email
+                }).FirstOrDefault();
+
+            return donor;
         }
 
         public ICollection<PersonDto> GetAll()
         {
-            List<PersonDto> donors = new List<PersonDto>();
-            donors.Add(new PersonDto { Id = 1, FirstName = "Wijitha", LastName = "Wijenayake", Email = "wijitha@yopmail.com", Birthday = new DateTime(1985, 8, 1) });
-            donors.Add(new PersonDto { Id = 2, FirstName = "Widura", LastName = "Wijenayake", Email = "widura@yopmail.com", Birthday = new DateTime(1990, 8, 8) });
-            donors.Add(new PersonDto { Id = 3, FirstName = "Wickrama", LastName = "Wijenayake", Email = "wickrama@yopmail.com", Birthday = new DateTime(1983, 7, 12) });
+            var donors = _dataContext.Donors.Select(d => new PersonDto
+            {
+                Id = d.Id,
+                FirstName = d.FirstName,
+                LastName = d.LastName,
+                Birthday = d.Birthday,
+                Email = d.Email
+            }).ToList();
 
             return donors;
         }

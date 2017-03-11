@@ -12,13 +12,13 @@ namespace DMS.Domain.Entities
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(200)]
-        public string Description { get; set; }
+        [MaxLength(50)]
+        public string ShortDescription { get; set; }
 
         public virtual ICollection<Project> Projects { get; set; }
 
         [Required]
-        [MaxLength(30)]
-        public string ShortDescription { get; set; }
+        [MaxLength(500)]
+        public string Description { get; set; }
     }
 }
