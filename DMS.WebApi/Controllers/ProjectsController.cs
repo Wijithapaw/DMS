@@ -21,17 +21,17 @@ namespace DMS.WebApi.Controllers
             _projectsService = projectsService;
         }
 
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+        }
+
         // GET: api/values
         [HttpGet]
         public IEnumerable<ProjectDto> Get()
         {
             return _projectsService.GetAll();            
-        }
-
-        [Route("GetByCategory")]
-        public IEnumerable<ProjectDto> Get([FromQuery] string category)
-        {
-            return _projectsService.GetAll(category);
         }
 
         // GET api/values/5
@@ -42,11 +42,17 @@ namespace DMS.WebApi.Controllers
             return project;
         }
 
+        [Route("GetByCategory")]
+        public IEnumerable<ProjectDto> Get([FromQuery] string category)
+        {
+            return _projectsService.GetAll(category);
+        }        
+
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]Project project)
+        public IActionResult Post([FromBody]ProjectDto projectDto)
         {
-            _projectsService.Create(project);
+            _projectsService.Create(projectDto);
             return Ok();
         }
 
@@ -55,12 +61,6 @@ namespace DMS.WebApi.Controllers
         public void Put(int id, [FromBody]ProjectDto project)
         {
             _projectsService.Update(project);
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        }        
     }
 }

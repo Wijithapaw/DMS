@@ -9,7 +9,7 @@ namespace DMS.Domain.Services
 {
     public interface IProjectsService
     {
-        void Create(Project project);
+        void Create(ProjectDto project);
 
         void Delete(int id);
 

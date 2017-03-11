@@ -19,15 +19,26 @@ namespace DMS.Services
             _dataContext = dataContext;
         }
 
-        public void Create(Project project)
+        public void Create(ProjectDto projectDto)
         {
+            var project = new Project
+            {
+                Title = projectDto.Title,
+                Description = projectDto.Description,
+                ProjectCategoryId = projectDto.ProjectCategoryId,
+                StartDateUtc = projectDto.StartDate,
+                EndDateUtc = projectDto.EndDate                
+            };
+
             _dataContext.Projects.Add(project);
             _dataContext.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var project = _dataContext.Projects.Find(id);
+            _dataContext.Projects.Remove(project);
+            _dataContext.SaveChanges();
         }
 
         public ProjectDto Get(int id)
@@ -79,16 +90,13 @@ namespace DMS.Services
 
         public void Update(ProjectDto projectDto)
         {
-            var project = new Project
-            {
-                Id = projectDto.Id,
-                Title = projectDto.Title,
-                Description = projectDto.Description,
-                StartDateUtc = projectDto.StartDate,
-                EndDateUtc = projectDto.EndDate
-            };
+            var project = _dataContext.Projects.Find(projectDto.Id);
 
-            _dataContext.Update(project);
+            project.Title = projectDto.Title;
+            project.Description = projectDto.Description;
+            project.ProjectCategoryId = projectDto.ProjectCategoryId;
+            project.StartDateUtc = projectDto.StartDate;
+            project.EndDateUtc = projectDto.EndDate;
 
             _dataContext.SaveChanges();
         }

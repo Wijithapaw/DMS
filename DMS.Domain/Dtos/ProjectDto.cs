@@ -13,6 +13,8 @@ namespace DMS.Domain.Dtos
 
         public string Description { get; set; }
 
+        public int ProjectCategoryId { get; set; }
+
         public string ProjectCategory { get; set; }
 
         public DateTime StartDate { get; set; }
