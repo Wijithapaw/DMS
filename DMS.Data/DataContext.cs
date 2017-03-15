@@ -1,11 +1,5 @@
-﻿using DMS.Domain;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DMS.Domain.Entities;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using DMS.Data.Entities;
 
 namespace DMS.Data
 {

@@ -1,13 +1,10 @@
 ﻿using DMS.Data;
+using DMS.Data.Entities;
 using DMS.Domain.Dtos;
-using DMS.Domain.Entities;
-using DMS.Domain.Services;
 using DMS.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace DMS.Tests

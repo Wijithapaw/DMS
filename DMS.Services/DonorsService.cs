@@ -1,11 +1,9 @@
 ﻿using DMS.Domain.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using DMS.Domain.Dtos;
 using DMS.Data;
-using DMS.Domain.Entities;
+using DMS.Data.Entities;
 
 namespace DMS.Services
 {
