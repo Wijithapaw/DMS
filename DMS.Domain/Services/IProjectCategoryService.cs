@@ -1,4 +1,5 @@
-﻿using DMS.Domain.Entities;
+﻿using DMS.Domain.Dtos;
+using DMS.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,14 @@ namespace DMS.Domain.Services
 {
     public interface IProjectCategoryService
     {
-        void Create(ProjectCategory project);
+        void Create(ProjectCategoryDto project);
 
         void Delete(int id);
 
-        ProjectCategory Get(int id);
+        ProjectCategoryDto Get(int id);
 
-        ICollection<ProjectCategory> GetAll();
+        ICollection<ProjectCategoryDto> GetAll();
 
-        void Update(ProjectCategory project);
+        void Update(ProjectCategoryDto project);
     }
 }

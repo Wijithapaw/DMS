@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DMS.Domain.Entities;
 using DMS.Data;
+using DMS.Domain.Dtos;
 
 namespace DMS.Services
 {
@@ -16,29 +17,58 @@ namespace DMS.Services
         {
             _dataContext = dataContext;
         }
-        public void Create(ProjectCategory project)
+        public void Create(ProjectCategoryDto projectCategoryDto)
         {
-            throw new NotImplementedException();
+            var projectCategory = new ProjectCategory
+            {
+                ShortDescription = projectCategoryDto.ShortDescription,
+                Description = projectCategoryDto.Description
+            };
+
+            _dataContext.ProjectCategories.Add(projectCategory);
+            _dataContext.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var projectCategory = _dataContext.ProjectCategories.Find(id);
+            _dataContext.ProjectCategories.Remove(projectCategory);
+            _dataContext.SaveChanges();
         }
 
-        public ProjectCategory Get(int id)
+        public ProjectCategoryDto Get(int id)
         {
-            return _dataContext.ProjectCategories.Find(id);
+            var projectCategory = _dataContext.ProjectCategories
+                                        .Where(c => c.Id == id)
+                                        .Select(c => new ProjectCategoryDto
+                                        {
+                                            Id = c.Id,
+                                            ShortDescription = c.ShortDescription,
+                                            Description = c.Description
+                                        }).FirstOrDefault();
+            return projectCategory;
         }
 
-        public ICollection<ProjectCategory> GetAll()
+        public ICollection<ProjectCategoryDto> GetAll()
         {
-            return _dataContext.ProjectCategories.ToList();
+            var categories = _dataContext.ProjectCategories
+                .Select(c => new ProjectCategoryDto
+                {
+                    ShortDescription = c.ShortDescription,
+                    Description = c.Description
+                }).ToList();
+
+            return categories;
         }
 
-        public void Update(ProjectCategory project)
+        public void Update(ProjectCategoryDto categoryDto)
         {
-            throw new NotImplementedException();
+            var category = _dataContext.ProjectCategories.Find(categoryDto.Id);
+
+            category.ShortDescription = categoryDto.ShortDescription;
+            category.Description = categoryDto.Description;
+
+            _dataContext.SaveChanges();
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DMS.Domain.Dtos;
 using DMS.Data;
+using DMS.Domain.Entities;
 
 namespace DMS.Services
 {
@@ -17,14 +18,26 @@ namespace DMS.Services
             _dataContext = dataContext;
         }
 
-        public void Create(PersonDto donor)
+        public void Create(PersonDto donorDto)
         {
-            throw new NotImplementedException();
+            var donor = new Donor
+            {
+                FirstName = donorDto.FirstName,
+                LastName = donorDto.LastName,
+                Email = donorDto.Email,
+                Birthday = donorDto.Birthday,
+                Active = true
+            };
+
+            _dataContext.Donors.Add(donor);
+            _dataContext.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            var donor = _dataContext.Donors.Find(id);
+            _dataContext.Donors.Remove(donor);
+            _dataContext.SaveChanges();
         }
 
         public PersonDto Get(int id)
@@ -57,9 +70,16 @@ namespace DMS.Services
             return donors;
         }
 
-        public void Update(PersonDto person)
+        public void Update(PersonDto donorDto)
         {
-            throw new NotImplementedException();
+            var donor = _dataContext.Donors.Find(donorDto.Id);
+
+            donor.FirstName = donorDto.FirstName;
+            donor.LastName = donorDto.LastName;
+            donor.Email = donorDto.Email;
+            donor.Birthday = donorDto.Birthday;
+
+            _dataContext.SaveChanges();
         }
     }
 }

@@ -13,49 +13,13 @@ namespace DMS.Tests
 {
     public class DonorServiceTests
     {
-        public static Donor CreateNewDonor(int id, string firstName, string lastName, DateTime birthday, string email)
+        public class Delete
         {
-            return new Donor
-            {
-                Id  = id,
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-                Birthday = birthday,
-                CreatedBy = 1,
-                CreatedDateUtc = DateTime.UtcNow,
-                LastUpdatedBy = 1,
-                LastUpdatedDateUtc = DateTime.UtcNow
-            };
-        }
-
-        private static void CreateTestDonors(DbContextOptions<DataContext> options)
-        {
-            using (var context = new DataContext(options))
-            {
-                context.Database.EnsureDeleted();
-
-                context.Donors.Add(CreateNewDonor(1, "Wijitha", "Wijenayake", new DateTime(1985, 8, 1), "wijitha@yopmail.com"));
-                context.Donors.Add(CreateNewDonor(2, "Widura", "Wijenayake", new DateTime(1990, 8, 1), "widura@yopmail.com"));
-                context.Donors.Add(CreateNewDonor(3, "Wickrama", "Wijenayake", new DateTime(1983, 8, 5), "wickrama@yopmail.com"));
-                context.SaveChanges();
-            }
-        }
-        //private static bool ValidateDonor(PersonDto donor, out string errorMessage)
-        //{
-        //    bool valid = true;
-
-        //    Assert.NotNull(donor);
-        //    Assert.Equal("wijitha@yopmail.com", donor.Email);
-        //    Assert.Equal("Wijitha", donor.FirstName);
-        //    Assert.Equal("Wijenayake", donor.LastName);
-        //    Assert.Equal(new DateTime(1985, 8, 1), donor.Birthday);
-        //}
-
-        public class GetAll
-        {
-            [Fact]
-            public void WhenThereAreDonors_ReturnAll()
+            [Theory]
+            [InlineData(1)]
+            [InlineData(2)]
+            [InlineData(3)]
+            public void WhenExistingDonor_DeleteSuccessfully(int id)
             {
                 var options = Helper.GetContextOptions();
 
@@ -64,22 +28,67 @@ namespace DMS.Tests
                 using (var context = new DataContext(options))
                 {
                     var service = new DonorsService(context);
-                    var donors = service.GetAll();
-                    Assert.Equal(3, donors.Count);
+
+                    var donorBeforeDelete = service.Get(id);
+                    Assert.NotNull(donorBeforeDelete);
+
+                    service.Delete(id);
+
+                    var deletedDonor = service.Get(id);
+                    Assert.Null(deletedDonor);
                 }
             }
 
-            [Fact]
-            public void WhenThereAreNoDonors_ReturnNon()
+            [Theory]
+            [InlineData(100)]
+            [InlineData(200)]
+            [InlineData(300)]
+            public void WhenNonExistingDonor_ThrowsException(int id)
             {
-                using (var context = new DataContext(Helper.GetContextOptions()))
+                var options = Helper.GetContextOptions();
+
+                CreateTestDonors(options);
+
+                using (var context = new DataContext(options))
                 {
                     var service = new DonorsService(context);
-                    var donors = service.GetAll();
-                    Assert.Equal(0, donors.Count);
+
+                    Assert.Throws<ArgumentNullException>(() => service.Delete(id));
                 }
             }
         }
+
+        public class Create
+        {
+            [Theory]
+            [InlineData("Saman","Kumara","saman@yopmail.com", "1990-1-1")]
+            [InlineData("Anjan", "Malik", "anjan.malik@yopmail.com", "1960-1-1")]
+            public void WhenPassingCorrectDate_SuccessfullyCreate(string firstName, string lastName, string email, DateTime birthday)
+            {
+                var options = Helper.GetContextOptions();
+
+                CreateTestDonors(options);
+
+                using (var context = new DataContext(options))
+                {
+                    var service = new DonorsService(context);
+
+                    var donor = new PersonDto
+                    {
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = email,
+                        Birthday = birthday
+                    };
+
+                    service.Create(donor);
+
+                    var newDonor = service.GetAll().Where(d => d.Email == email).FirstOrDefault();
+
+                    ValidateDonor(newDonor, null, firstName, lastName, email, birthday);
+                }
+            }
+        }        
 
         public class Get
         {
@@ -125,5 +134,138 @@ namespace DMS.Tests
                 }
             }
         }
+
+        public class GetAll
+        {
+            [Fact]
+            public void WhenThereAreDonors_ReturnAll()
+            {
+                var options = Helper.GetContextOptions();
+
+                CreateTestDonors(options);
+
+                using (var context = new DataContext(options))
+                {
+                    var service = new DonorsService(context);
+                    var donors = service.GetAll();
+                    Assert.Equal(3, donors.Count);
+                }
+            }
+
+            [Fact]
+            public void WhenThereAreNoDonors_ReturnNon()
+            {
+                using (var context = new DataContext(Helper.GetContextOptions()))
+                {
+                    var service = new DonorsService(context);
+                    var donors = service.GetAll();
+                    Assert.Equal(0, donors.Count);
+                }
+            }
+        }
+        
+        public class Update
+        {
+            [Theory]
+            [InlineData(1, "Athula", "Kumara", "athula@yopmail.com", "1990-1-1")]
+            [InlineData(1, "Chamara", "Agith", "cham.ajith@yopmail.com", "1960-1-1")]
+            public void WhenUpdatingExistingDonor_SuccessfullyUpdate(int id, string firstName, string lastName, string email, DateTime birthday)
+            {
+                var options = Helper.GetContextOptions();
+
+                CreateTestDonors(options);
+
+                using (var context = new DataContext(options))
+                {
+                    var service = new DonorsService(context);
+
+                    var donor = new PersonDto
+                    {
+                        Id = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = email,
+                        Birthday = birthday
+                    };
+
+                    service.Update(donor);
+
+                    var newDonor = service.Get(id);
+
+                    ValidateDonor(newDonor, id, firstName, lastName, email, birthday);
+                }
+            }
+
+            [Theory]
+            [InlineData(100, "Athula", "Kumara", "athula@yopmail.com", "1990-1-1")]
+            [InlineData(200, "Chamara", "Agith", "cham.ajith@yopmail.com", "1960-1-1")]
+            public void WhenUpdatingNonExistingDonor_ThrowsException(int id, string firstName, string lastName, string email, DateTime birthday)
+            {
+                var options = Helper.GetContextOptions();
+
+                CreateTestDonors(options);
+
+                using (var context = new DataContext(options))
+                {
+                    var service = new DonorsService(context);
+
+                    var donor = new PersonDto
+                    {
+                        Id = id,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Email = email,
+                        Birthday = birthday
+                    };
+
+                    Assert.Throws<NullReferenceException>(() => service.Update(donor));
+                }
+            }
+        }
+
+        #region Private Methods
+
+        private static Donor CreateNewDonor(string firstName, string lastName, DateTime birthday, string email)
+        {
+            return new Donor
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                Birthday = birthday,
+                CreatedBy = 1,
+                CreatedDateUtc = DateTime.UtcNow,
+                LastUpdatedBy = 1,
+                LastUpdatedDateUtc = DateTime.UtcNow
+            };
+        }
+
+        private static void CreateTestDonors(DbContextOptions<DataContext> options)
+        {
+            using (var context = new DataContext(options))
+            {
+                context.Database.EnsureDeleted();
+
+                context.Donors.Add(CreateNewDonor("Wijitha", "Wijenayake", new DateTime(1985, 8, 1), "wijitha@yopmail.com"));
+                context.Donors.Add(CreateNewDonor("Widura", "Wijenayake", new DateTime(1990, 8, 1), "widura@yopmail.com"));
+                context.Donors.Add(CreateNewDonor("Wickrama", "Wijenayake", new DateTime(1983, 8, 5), "wickrama@yopmail.com"));
+                context.SaveChanges();
+            }
+        }
+
+        private static void ValidateDonor(PersonDto donor, int? id, string firstName, string lastName, string email, DateTime birthday)
+        {
+            Assert.NotNull(donor);
+
+            if (id != null)
+                Assert.Equal(id, donor.Id);
+
+            Assert.Equal(email, donor.Email);
+            Assert.Equal(firstName, donor.FirstName);
+            Assert.Equal(lastName, donor.LastName);
+            Assert.Equal(birthday, donor.Birthday);
+        }
+
+        #endregion
     }
 }
