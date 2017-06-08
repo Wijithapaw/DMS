@@ -37,6 +37,8 @@ namespace DMS.Data
 
         public void Intialize()
         {
+            Database.EnsureDeleted();
+            //Database.EnsureCreated();
             //Apply any pending migrations
             Database.Migrate();
         }
