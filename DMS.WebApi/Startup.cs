@@ -45,7 +45,7 @@ namespace DMS.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DataContext context)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -53,8 +53,7 @@ namespace DMS.WebApi
             app.UseMvc();
 
             //Apply any pending migrations
-            var context = app.ApplicationServices.GetService<DataContext>();
-            context.Intialize();
+            DbInitializer.Initialize(context);
         }
     }
 }

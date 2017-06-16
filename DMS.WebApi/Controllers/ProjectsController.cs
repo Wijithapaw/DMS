@@ -27,7 +27,8 @@ namespace DMS.WebApi.Controllers
         [HttpGet]
         public IEnumerable<ProjectDto> Get()
         {
-            return _projectsService.GetAll();            
+            var projectsList = _projectsService.GetAll();
+            return projectsList;
         }
 
         // GET api/values/5
@@ -41,7 +42,8 @@ namespace DMS.WebApi.Controllers
         [Route("GetByCategory")]
         public IEnumerable<ProjectDto> Get([FromQuery] string category)
         {
-            return _projectsService.GetAll(category);
+            var projectsList = _projectsService.GetAll(category);
+            return projectsList;
         }        
 
         // POST api/values

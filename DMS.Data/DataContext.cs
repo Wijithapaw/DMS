@@ -1,13 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DMS.Data.Entities;
+using System.Linq;
+using System;
+using DMS.Utills;
 
 namespace DMS.Data
 {
     public class DataContext : DbContext
     {
+        EnvironmentDescriptor _envDescriptor;
+
         public DataContext(DbContextOptions<DataContext> options) : base (options)
         {
-            
+            _envDescriptor = new EnvironmentDescriptor { UserId = 1 }; //TODO get the correct user Id from DI
         }
 
         public DbSet<Project> Projects { get; set; }
@@ -35,12 +40,26 @@ namespace DMS.Data
             // Add your customizations after calling base.OnModelCreating(builder);
         }
 
-        public void Intialize()
+        public override int SaveChanges()
         {
-            Database.EnsureDeleted();
-            //Database.EnsureCreated();
-            //Apply any pending migrations
-            Database.Migrate();
+            if (_envDescriptor != null)
+            {
+                foreach (var entry in this.ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Added))
+                {
+                    entry.Entity.CreatedBy  = _envDescriptor.UserId;
+                    entry.Entity.CreatedDateUtc  = DateTime.UtcNow;
+                    entry.Entity.LastUpdatedBy = _envDescriptor.UserId;
+                    entry.Entity.LastUpdatedDateUtc = DateTime.UtcNow;
+                }
+
+                foreach (var entry in this.ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Modified))
+                {
+                    entry.Entity.LastUpdatedBy = _envDescriptor.UserId;
+                    entry.Entity.LastUpdatedDateUtc = DateTime.UtcNow;
+                }
+            }
+            return base.SaveChanges();
         }
+
     }
 }
