@@ -3,27 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DMS.Web", "DMS.Web\", "{C8E494A1-0A7F-4286-9C94-DAE5E13CB0D3}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_59889"
-		Debug.AspNetCompiler.PhysicalPath = "DMS.Web\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59889\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_59889"
-		Release.AspNetCompiler.PhysicalPath = "DMS.Web\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59889\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "59889"
-		SlnRelativePath = "DMS.Web\"
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DMS.Data", "DMS.Data\DMS.Data.csproj", "{B222516A-2982-4B90-88BD-EA94F4228712}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DMS.Domain", "DMS.Domain\DMS.Domain.csproj", "{3B8CDFB7-6AF3-4FEE-AF67-8982D5BBB774}"
