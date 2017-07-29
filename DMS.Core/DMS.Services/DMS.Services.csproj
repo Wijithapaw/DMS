@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DMS.Data\DMS.Data.csproj" />
     <ProjectReference Include="..\DMS.Domain\DMS.Domain.csproj" />
   </ItemGroup>

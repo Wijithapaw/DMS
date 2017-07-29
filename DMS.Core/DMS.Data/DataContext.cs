@@ -3,10 +3,11 @@ using DMS.Data.Entities;
 using System.Linq;
 using System;
 using DMS.Utills;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DMS.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
     {
         EnvironmentDescriptor _envDescriptor;
 
@@ -19,20 +20,14 @@ namespace DMS.Data
 
         public DbSet<ProjectCategory> ProjectCategories { get; set; }
 
-        public DbSet<Donor> Donors { get; set; }
-
-        public DbSet<Admin> Admins { get; set; }
-
         public DbSet<Donee> Donees { get; set; }
-
-        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
             builder.Entity<ProjectCategory>()
-                .HasIndex(c => c.ShortDescription)
+                .HasIndex(c => c.Title)
                 .IsUnique(true);
 
             // Customize the ASP.NET Identity model and override the defaults if needed.
@@ -47,15 +42,15 @@ namespace DMS.Data
                 foreach (var entry in this.ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Added))
                 {
                     entry.Entity.CreatedBy  = _envDescriptor.UserId;
-                    entry.Entity.CreatedDateUtc  = DateTime.UtcNow;
+                    entry.Entity.CreatedDate  = DateTime.UtcNow;
                     entry.Entity.LastUpdatedBy = _envDescriptor.UserId;
-                    entry.Entity.LastUpdatedDateUtc = DateTime.UtcNow;
+                    entry.Entity.LastUpdatedDate = DateTime.UtcNow;
                 }
 
                 foreach (var entry in this.ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Modified))
                 {
                     entry.Entity.LastUpdatedBy = _envDescriptor.UserId;
-                    entry.Entity.LastUpdatedDateUtc = DateTime.UtcNow;
+                    entry.Entity.LastUpdatedDate = DateTime.UtcNow;
                 }
             }
             return base.SaveChanges();

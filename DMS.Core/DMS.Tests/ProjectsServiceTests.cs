@@ -282,7 +282,7 @@ namespace DMS.Tests
             return new ProjectCategory
             {
                 Description = description,
-                ShortDescription = shortDesc,
+                Title = shortDesc,
             };
         }
 
@@ -293,8 +293,8 @@ namespace DMS.Tests
                 Title = title,
                 Description = description,
                 ProjectCategoryId = categoryId,
-                StartDateUtc = startDate,
-                EndDateUtc = endDate,
+                StartDate = startDate,
+                EndDate = endDate,
             };
         }
 

@@ -235,7 +235,7 @@ namespace DMS.Tests
             return new ProjectCategory
             {
                 Description = description,
-                ShortDescription = shortDesc,
+                Title = shortDesc,
             };
         }
 

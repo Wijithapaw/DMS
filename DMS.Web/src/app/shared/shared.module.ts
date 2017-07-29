@@ -12,7 +12,7 @@ import { PageHeaderComponent } from './page-header/page-header.component';
 
 @NgModule({
     imports: [
-        BrowserModule,
+        //BrowserModule,
         CommonModule,
         FormsModule,
         //InMemoryWebApiModule.forRoot(InMemoryDataService)
@@ -24,7 +24,7 @@ import { PageHeaderComponent } from './page-header/page-header.component';
         DataService
     ],
     exports: [
-        BrowserModule,
+        //BrowserModule,
         CommonModule,
         FormsModule,
         PageHeaderComponent

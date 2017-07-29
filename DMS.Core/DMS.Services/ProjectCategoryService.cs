@@ -19,7 +19,7 @@ namespace DMS.Services
         {
             var projectCategory = new ProjectCategory
             {
-                ShortDescription = projectCategoryDto.ShortDescription,
+                Title = projectCategoryDto.ShortDescription,
                 Description = projectCategoryDto.Description
             };
 
@@ -41,7 +41,7 @@ namespace DMS.Services
                                         .Select(c => new ProjectCategoryDto
                                         {
                                             Id = c.Id,
-                                            ShortDescription = c.ShortDescription,
+                                            ShortDescription = c.Title,
                                             Description = c.Description
                                         }).FirstOrDefault();
             return projectCategory;
@@ -52,7 +52,7 @@ namespace DMS.Services
             var categories = _dataContext.ProjectCategories
                 .Select(c => new ProjectCategoryDto
                 {
-                    ShortDescription = c.ShortDescription,
+                    ShortDescription = c.Title,
                     Description = c.Description
                 }).ToList();
 
@@ -63,7 +63,7 @@ namespace DMS.Services
         {
             var category = _dataContext.ProjectCategories.Find(categoryDto.Id);
 
-            category.ShortDescription = categoryDto.ShortDescription;
+            category.Title = categoryDto.ShortDescription;
             category.Description = categoryDto.Description;
 
             _dataContext.SaveChanges();

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DMS.Data.Entities
+namespace DMS.Domain.Dtos
 {
-    public class Donee : BaseEntity
+    public class UserDto
     {
         public int Id { get; set; }
 
@@ -10,10 +10,10 @@ namespace DMS.Data.Entities
 
         public string LastName { get; set; }
 
-        public string  Email { get; set; }
-
-        public bool Active { get; set; }
+        public string Email { get; set; }
 
         public DateTime Birthday { get; set; }
+
+        public bool Active { get; set; }
     }
 }

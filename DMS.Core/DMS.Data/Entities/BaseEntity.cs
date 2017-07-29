@@ -6,10 +6,10 @@ namespace DMS.Data.Entities
     {
         public int CreatedBy { get; set; }
 
-        public DateTime CreatedDateUtc { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         public int LastUpdatedBy { get; set; }
 
-        public DateTime LastUpdatedDateUtc { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
     }
 }

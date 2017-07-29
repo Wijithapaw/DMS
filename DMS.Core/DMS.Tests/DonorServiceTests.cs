@@ -71,7 +71,7 @@ namespace DMS.Tests
                 {
                     var service = new DonorsService(context);
 
-                    var donor = new PersonDto
+                    var donor = new UserDto
                     {
                         FirstName = firstName,
                         LastName = lastName,
@@ -177,7 +177,7 @@ namespace DMS.Tests
                 {
                     var service = new DonorsService(context);
 
-                    var donor = new PersonDto
+                    var donor = new UserDto
                     {
                         Id = id,
                         FirstName = firstName,
@@ -207,7 +207,7 @@ namespace DMS.Tests
                 {
                     var service = new DonorsService(context);
 
-                    var donor = new PersonDto
+                    var donor = new UserDto
                     {
                         Id = id,
                         FirstName = firstName,
@@ -251,7 +251,7 @@ namespace DMS.Tests
             }
         }
 
-        private static void ValidateDonor(PersonDto donor, int? id, string firstName, string lastName, string email, DateTime birthday)
+        private static void ValidateDonor(UserDto donor, int? id, string firstName, string lastName, string email, DateTime birthday)
         {
             Assert.NotNull(donor);
 

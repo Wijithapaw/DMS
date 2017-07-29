@@ -1,4 +1,4 @@
-﻿import { ModuleWithProviders} from '@angular/core'
+﻿import { NgModule} from '@angular/core'
 import { Routes, RouterModule} from '@angular/router'
 
 
@@ -7,9 +7,20 @@ import { DonorsComponent } from './donors.component'
 
 const donorsRoutes: Routes = [
     {
-        path: 'donors',
-        component: DonorsComponent
+        path: '',
+        component: DonorsComponent,
+        data: {
+            title: 'Donors'
+        }
     }
 ];
 
-export const donorsRouting: ModuleWithProviders = RouterModule.forChild(donorsRoutes);
+@NgModule({
+    imports: [
+        RouterModule.forChild(donorsRoutes)
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class DonorsRoutingModule{}

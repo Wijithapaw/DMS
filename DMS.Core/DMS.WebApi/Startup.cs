@@ -13,6 +13,11 @@ using DMS.Services;
 using DMS.Domain;
 using DMS.Data;
 using Microsoft.EntityFrameworkCore;
+using DMS.Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DMS.WebApi
 {
@@ -36,24 +41,64 @@ namespace DMS.WebApi
             services.AddDbContext<DataContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
 
+            services.AddIdentity<ApplicationUser, IdentityRole<int>>()
+            .AddEntityFrameworkStores<DataContext, int>()
+            .AddDefaultTokenProviders();
+
             // Add framework services.
             services.AddMvc();
-            
+
+            // Configure Identity
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+
+                // Lockout settings
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+
+                // Cookie settings
+                //options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                //options.Cookies.ApplicationCookie.LoginPath = "/Account/LogIn";
+                //options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOut";
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+
             services.AddScoped<IProjectsService, ProjectsService>();
             services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
-            services.AddScoped<IDonorsService, DonorsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DataContext context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DataContext context, UserManager<ApplicationUser> userManager)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+                AutomaticAuthenticate = true,
+                AutomaticChallenge = true,
+                TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidIssuer = "localhost:4200",
+                    ValidAudience = "localhost:4200",
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKey_GetThisFromAppSettings")),
+                    ValidateLifetime = true
+                }
+            });
+
             app.UseMvc();
 
             //Apply any pending migrations
-            DbInitializer.Initialize(context);
+            DbInitializer.Initialize(context, userManager);
         }
     }
 }

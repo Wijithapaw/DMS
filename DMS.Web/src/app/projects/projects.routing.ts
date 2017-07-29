@@ -1,23 +1,40 @@
-import { ModuleWithProviders} from '@angular/core'
+import { NgModule } from '@angular/core'
 import { Routes, RouterModule} from '@angular/router'
 
 import { ProjectsComponent } from './projects.component'
 import { EditProjectComponent } from './edit-project/edit-project.component';
 
-
 const projectsRoutes: Routes = [
     {
-        path: 'projects',
-        component: ProjectsComponent
+        path: '',
+        component: ProjectsComponent,
+        data: {
+            title: ''
+        }
     },
     {
-        path: 'project/new',
-        component: EditProjectComponent
+        path: 'new',
+        component: EditProjectComponent,
+        data: {
+            title: 'New'
+        }
     },
     {
-        path: 'project/edit/:id',
-        component: EditProjectComponent
+        path: 'edit/:id',
+        component: EditProjectComponent,
+        data: {
+            title: 'Edit'
+        }
     }
 ];
 
-export const projectsRouting: ModuleWithProviders = RouterModule.forChild(projectsRoutes);
+@NgModule({
+    imports: [
+        RouterModule.forChild(projectsRoutes)
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+
+export class ProjectsRoutingModule {}

@@ -2,31 +2,29 @@
 
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { BrowserModule } from '@angular/platform-browser';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap'
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
 
-import { AppComponent} from './app.component';
-import { routing } from './app.routing';
+import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app.routing';
 
-import { SharedModule } from './shared/shared.module';
-import { DonorsModule } from './donors/donors.module';
-import { ProjectsModule } from './projects/projects.module';
-import { DashboardModule } from './dashboard/dashboard.module';
 import { CoreModule } from './core/core.module';
+import { AuthorizedLayoutComponent } from './layout/authorized-layout/authorized-layout.component';
+import { UnauthorizedLayoutComponent } from './layout/unauthorized-layout/unauthorized-layout.component';
 
 @NgModule({
     imports: [
+        BrowserModule,
         CoreModule,
-        DashboardModule,
-        DonorsModule,
         HttpModule,
-        routing,
-        NgbModule.forRoot(),
-        SharedModule,
-        ProjectsModule
+        AppRoutingModule,
+        NgbModule.forRoot()
     ],
     declarations: [
-        AppComponent
+        AppComponent,
+        AuthorizedLayoutComponent,
+        UnauthorizedLayoutComponent,
     ],
     providers: [
     ],

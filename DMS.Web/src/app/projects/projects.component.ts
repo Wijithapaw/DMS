@@ -22,7 +22,7 @@ export class ProjectsComponent implements OnInit {
     }
 
     createNew(): void {
-        let link = ['/project/new'];
+        let link = ['/projects/new'];
         this.router.navigate(link);
     }
 

@@ -9,12 +9,12 @@ namespace DMS.Data.Entities
 
         [Required]
         [MaxLength(50)]
-        public string ShortDescription { get; set; }
-
-        public virtual ICollection<Project> Projects { get; set; }
+        public string Title { get; set; }
 
         [Required]
         [MaxLength(500)]
         public string Description { get; set; }
+
+        public virtual ICollection<Project> Projects { get; set; }
     }
 }

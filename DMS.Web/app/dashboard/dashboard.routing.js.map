@@ -1,1 +1,0 @@
-{"version":3,"file":"dashboard.routing.js","sourceRoot":"","sources":["dashboard.routing.ts"],"names":[],"mappings":";;AACA,0CAAqD;AAErD,6DAA0D;AAE1D,IAAM,eAAe,GAAW;IAC5B;QACI,IAAI,EAAE,WAAW;QACjB,SAAS,EAAE,wCAAkB;KAChC;IACD;QACI,IAAI,EAAE,EAAE;QACR,UAAU,EAAE,WAAW;QACvB,SAAS,EAAE,MAAM;KACpB;CACJ,CAAC;AAEW,QAAA,gBAAgB,GAAwB,qBAAY,CAAC,QAAQ,CAAC,eAAe,CAAC,CAAC"}

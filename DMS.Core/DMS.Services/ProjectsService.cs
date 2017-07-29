@@ -23,8 +23,8 @@ namespace DMS.Services
                 Title = projectDto.Title,
                 Description = projectDto.Description,
                 ProjectCategoryId = projectDto.ProjectCategoryId,
-                StartDateUtc = projectDto.StartDate,
-                EndDateUtc = projectDto.EndDate                
+                StartDate = projectDto.StartDate,
+                EndDate = projectDto.EndDate                
             };
 
             _dataContext.Projects.Add(project);
@@ -46,9 +46,9 @@ namespace DMS.Services
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
-                        ProjectCategory = p.ProjectCategory.ShortDescription,
-                        StartDate = p.StartDateUtc,
-                        EndDate = p.EndDateUtc
+                        ProjectCategory = p.ProjectCategory.Title,
+                        StartDate = p.StartDate,
+                        EndDate = p.EndDate
                     }).FirstOrDefault();
         }
 
@@ -60,9 +60,9 @@ namespace DMS.Services
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
-                        ProjectCategory = p.ProjectCategory.ShortDescription,
-                        StartDate = p.StartDateUtc,
-                        EndDate = p.EndDateUtc
+                        ProjectCategory = p.ProjectCategory.Title,
+                        StartDate = p.StartDate,
+                        EndDate = p.EndDate
                     }).ToList();
 
             return projects;
@@ -71,15 +71,15 @@ namespace DMS.Services
         public ICollection<ProjectDto> GetAll(string category)
         {
             var projects = _dataContext.Projects
-                    .Where(p => p.ProjectCategory.ShortDescription == category)
+                    .Where(p => p.ProjectCategory.Title == category)
                      .Select(p => new ProjectDto
                      {
                          Id = p.Id,
                          Title = p.Title,
                          Description = p.Description,
-                         ProjectCategory = p.ProjectCategory.ShortDescription,
-                         StartDate = p.StartDateUtc,
-                         EndDate = p.EndDateUtc
+                         ProjectCategory = p.ProjectCategory.Title,
+                         StartDate = p.StartDate,
+                         EndDate = p.EndDate
                      }).ToList();
 
             return projects;
@@ -92,8 +92,8 @@ namespace DMS.Services
             project.Title = projectDto.Title;
             project.Description = projectDto.Description;
             project.ProjectCategoryId = projectDto.ProjectCategoryId;
-            project.StartDateUtc = projectDto.StartDate;
-            project.EndDateUtc = projectDto.EndDate;
+            project.StartDate = projectDto.StartDate;
+            project.EndDate = projectDto.EndDate;
 
             _dataContext.SaveChanges();
         }

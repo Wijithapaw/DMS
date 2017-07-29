@@ -17,13 +17,21 @@ namespace DMS.Data.Entities
         [MaxLength(500)]
         public string Description { get; set; }
 
-        public virtual ProjectCategory ProjectCategory { get; set; }
-
+        [Required]
         [ForeignKey("ProjectCategory")]
         public int ProjectCategoryId { get; set; }
 
-        public DateTime StartDateUtc { get; set; }
+        [Required]
+        [ForeignKey("ProjectOwner")]
+        public int ProjectOwnerId { get; set; }
 
-        public DateTime? EndDateUtc { get; set; }
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
+
+        public virtual ProjectCategory ProjectCategory { get; set; }
+
+        public virtual ApplicationUser ProjectOwner { get; set; }
     }
 }
