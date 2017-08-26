@@ -1,4 +1,5 @@
-﻿using DMS.Domain.Dtos;
+﻿using DMS.Domain.Dtos.Account;
+using DMS.Domain.Dtos.User;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -13,6 +14,6 @@ namespace DMS.Domain.Services
 
         Task<AuthToken> CreateToken(LoginDto loginDto);
 
-        Task<UserDto> GetCurentUser(ClaimsPrincipal user);
+        Task<UserLDto> GetCurentUser(ClaimsPrincipal user);
     }
 }

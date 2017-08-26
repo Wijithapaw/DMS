@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 import { LoginDto } from '../models/login-dto'
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-login',
@@ -10,14 +12,29 @@ import { LoginDto } from '../models/login-dto'
 export class LoginComponent implements OnInit {
 
   loginData: LoginDto = new LoginDto();
+  errorMessage: string = '';
+  returnUrl: string;
 
-  constructor() { }
+  constructor(private accountService: AccountService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.route.params.forEach((params: Params) =>
+        {
+            this.returnUrl = params['returnUrl'];
+        });
   }
 
   public login(): void {
-    console.log(this.loginData);
+    this.accountService.login(this.loginData)
+      .then(() => {
+        let link = [this.returnUrl]
+        this.router.navigate(link);
+      })
+      .catch((response) => this.errorMessage = response.error.json().error);
   }
 
+  public clearError()
+  {
+    this.errorMessage = "";
+  }
 }

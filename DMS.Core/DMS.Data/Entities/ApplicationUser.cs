@@ -29,5 +29,8 @@ namespace DMS.Data.Entities
         public int LastUpdatedBy { get; set; }
 
         public DateTime LastUpdatedDate { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

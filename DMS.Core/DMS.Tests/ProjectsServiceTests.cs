@@ -1,10 +1,13 @@
 ﻿using DMS.Data;
 using DMS.Data.Entities;
 using DMS.Domain.Dtos;
+using DMS.Domain.Dtos.Project;
 using DMS.Services;
+using DMS.Utills.CustomExceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DMS.Tests
@@ -16,7 +19,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData("Sholaship for Supun", "As a aid for university education", 1, "Educational", "2017-3-1", "2018-12-31")]
             [InlineData("Sholaship for Amal", "Start a workshop", 2, "Self Employment", "2017-2-1", "2018-2-28")]
-            public void WhenPassingCorrectData_SuccessfullyCreate(string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
+            public async Task WhenPassingCorrectData_SuccessfullyCreate(string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
             {
                 var options = Helper.GetContextOptions();
 
@@ -35,9 +38,9 @@ namespace DMS.Tests
                         EndDate = endDate
                     };
 
-                    service.Create(projectDto);
+                    var id = await service.CreateAsync(projectDto);
 
-                    var project = service.GetAll().Where(p => p.Title == title).FirstOrDefault();
+                    var project = await service.GetAsync(id);
 
                     ValidateProject(project, null, title, description, category, startDate, endDate);
                 }
@@ -47,7 +50,7 @@ namespace DMS.Tests
         public class Delete
         {
             [Fact]
-            public void WhenDeletingExistingProject_DeleteSuccessfully()
+            public async Task WhenDeletingExistingProject_DeleteSuccessfully()
             {
                 var options = Helper.GetContextOptions();
 
@@ -57,16 +60,16 @@ namespace DMS.Tests
                 {
                     var service = new ProjectsService(context);
 
-                    service.Delete(1);
+                    await service.DeleteAsync(1);
 
-                    var deletedProject = service.Get(1);
+                    var deletedProject = await service.GetAsync(1);
 
                     Assert.Null(deletedProject);
                 }
             }
 
             [Fact]
-            public void WhenDeletingNonExistingProject_ThrowsException()
+            public async Task WhenDeletingNonExistingProject_ThrowsException()
             {
                 var options = Helper.GetContextOptions();
 
@@ -76,7 +79,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectsService(context);
 
-                    Assert.ThrowsAny<ArgumentNullException>(() => service.Delete(100));                  
+                    await Assert.ThrowsAsync<RecordNotFoundException>(() => service.DeleteAsync(100));                  
                 }
             }
         }
@@ -87,7 +90,7 @@ namespace DMS.Tests
             [InlineData(1, "Scholaship for Asitha", "For higher education", "Educational", "2017-1-1", "2017-12-31")]
             [InlineData(2, "Scholaship for Supun", "For O/L education", "Educational", "2017-2-1", "2018-3-31")]
             [InlineData(3, "Scholaship for Viraj", "Aid for self employment", "Self Employment", "2017-3-1", null)]
-            public void WhenPassingValidIds_ReturnsProject(int id, string title, string description, string category, DateTime startDate, DateTime endDate)
+            public async Task WhenPassingValidIds_ReturnsProject(int id, string title, string description, string category, DateTime startDate, DateTime endDate)
             {
                 var options = Helper.GetContextOptions();
 
@@ -97,7 +100,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectsService(context);
 
-                    var project = service.Get(id);
+                    var project = await service.GetAsync(id);
 
                     Assert.NotNull(project);
                     Assert.Equal(title, project.Title);
@@ -114,7 +117,7 @@ namespace DMS.Tests
             [InlineData(10)]
             [InlineData(100)]
             [InlineData(101)]
-            public void WhenPassingInvalidIds_ReturnsNull(int id)
+            public async Task WhenPassingInvalidIds_ReturnsNull(int id)
             {
                 var options = Helper.GetContextOptions();
 
@@ -124,7 +127,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectsService(context);
 
-                    var project = service.Get(id);
+                    var project = await service.GetAsync(id);
 
                     Assert.Null(project);
                 }
@@ -134,7 +137,7 @@ namespace DMS.Tests
         public class GetAll
         {
             [Fact]
-            public void WhenThereAreProjects_ReturnsAll()
+            public async Task WhenThereAreProjects_ReturnsAll()
             {
                 var options = Helper.GetContextOptions();
 
@@ -143,20 +146,20 @@ namespace DMS.Tests
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectsService(context);
-                    var projects = service.GetAll();
+                    var projects = await service.GetAllAsync();
                     Assert.Equal(3, projects.Count);
                 }
             }
 
             [Fact]
-            public void WhenThereAreNoProjects_ReturnsNon()
+            public async Task WhenThereAreNoProjects_ReturnsNon()
             {
                 var options = Helper.GetContextOptions();
 
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectsService(context);
-                    var projects = service.GetAll();
+                    var projects = await service.GetAllAsync();
 
                     Assert.Equal(0, projects.Count);
                 }
@@ -166,7 +169,7 @@ namespace DMS.Tests
             [InlineData("Educational", 2)]
             [InlineData("Self Employment", 1)]
             [InlineData("Missalanious", 0)]
-            public void WhenThereProjects_ReturnsAllInSameCategory(string category, int count)
+            public async Task WhenThereProjects_ReturnsAllInSameCategory(string category, int count)
             {
                 var options = Helper.GetContextOptions();
 
@@ -175,7 +178,7 @@ namespace DMS.Tests
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectsService(context);
-                    var projects = service.GetAll(category);
+                    var projects = await service.GetAllAsync(category);
                     Assert.Equal(count, projects.Count);
                 }
             }
@@ -184,14 +187,14 @@ namespace DMS.Tests
             [InlineData("Educational", 0)]
             [InlineData("Self Employment", 0)]
             [InlineData("Missalanious", 0)]
-            public void WhenThereAreNoProjects_ReturnsNonWhenPassingCategory(string category, int count)
+            public async Task WhenThereAreNoProjects_ReturnsNonWhenPassingCategory(string category, int count)
             {
                 var options = Helper.GetContextOptions();
 
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectsService(context);
-                    var projects = service.GetAll(category);
+                    var projects = await service.GetAllAsync(category);
                     Assert.Equal(count, projects.Count);
                 }
             }
@@ -203,7 +206,7 @@ namespace DMS.Tests
             [InlineData(1, "Scholaship for Asitha - Updated", "For higher education - Updated", 1, "Educational", "2017-1-1", "2017-12-31")]
             [InlineData(2, "Scholaship for Supun", "Start Workshop", 2, "Self Employment", "2017-2-1", "2018-3-31")]
             [InlineData(3, "Scholaship for Kasun - Updated", "Buy a sewing machine", 3, "Missalanious", "2017-5-1", "2019-5-1")]
-            public void WhenUpdatingExistingProject_UpdateSuccessfully(int id, string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
+            public async Task WhenUpdatingExistingProject_UpdateSuccessfully(int id, string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
             {
                 var options = Helper.GetContextOptions();
 
@@ -223,16 +226,16 @@ namespace DMS.Tests
                         EndDate = endDate
                     };
 
-                    service.Update(projectDto);
+                    await service.UpdateAsync(projectDto);
 
-                    var updatedProject = service.Get(id);
+                    var updatedProject = await service.GetAsync(id);
 
                     ValidateProject(updatedProject, id, title, description, category, startDate, endDate);
                 }
             }
 
             [Fact]
-            public void WhenUpdatingNonExistingProject_ThrowsException()
+            public async Task WhenUpdatingNonExistingProject_ThrowsException()
             {
                 var options = Helper.GetContextOptions();
 
@@ -252,7 +255,7 @@ namespace DMS.Tests
                         EndDate = new DateTime(2018, 3, 1)
                     };
 
-                    Assert.ThrowsAny<NullReferenceException>(() => service.Update(projectDto));
+                    await Assert.ThrowsAsync<RecordNotFoundException>(() => service.UpdateAsync(projectDto));
                 }
             }
         }

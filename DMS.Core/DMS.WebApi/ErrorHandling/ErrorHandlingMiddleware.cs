@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using Newtonsoft.Json;
+using DMS.Utills.CustomExceptions;
 
-namespace DMS.Utills
+namespace DMS.WebApi.ErrorHandling
 {
     public class ErrorHandlingMiddleware
     {
@@ -31,19 +32,13 @@ namespace DMS.Utills
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            string error = "Unknown error occured while processsing the request";
             var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
+            if (exception is DMSException)
+                error = exception.Message;            
 
-            if (exception is NotImplementedException)
-                code = HttpStatusCode.NotImplemented;
-
-            /*
-            if (exception is MyNotFoundException) code = HttpStatusCode.NotFound;
-            else if (exception is MyUnauthorizedException) code = HttpStatusCode.Unauthorized;
-            else if (exception is MyException) code = HttpStatusCode.BadRequest;
-            */
-
-            var result = JsonConvert.SerializeObject(new { error = exception.Message });
+            var result = JsonConvert.SerializeObject(new { error = error });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
             return context.Response.WriteAsync(result);

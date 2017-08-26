@@ -4,8 +4,8 @@ using System.Text;
 
 namespace DMS.Utills
 {
-    public class EnvironmentDescriptor
+    public interface IEnvironmentDescriptor
     {
-        public int UserId { get; set; }
+        int UserId { get; }
     }
 }

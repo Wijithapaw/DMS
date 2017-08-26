@@ -1,10 +1,13 @@
 ﻿using DMS.Data;
 using DMS.Data.Entities;
 using DMS.Domain.Dtos;
+using DMS.Domain.Dtos.Project;
 using DMS.Services;
+using DMS.Utills.CustomExceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace DMS.Tests
@@ -16,7 +19,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData("Public Donation", "Donation for a public welfare project")]
             [InlineData("Religious Donation", "Donation for a religious matter")]
-            public void WhenPassingCorrectData_SuccessfullyCreate(string shortDescription, string description)
+            public async Task WhenPassingCorrectData_SuccessfullyCreate(string shortDescription, string description)
             {
                 var options = Helper.GetContextOptions();
 
@@ -32,9 +35,9 @@ namespace DMS.Tests
                         Description = description
                     };
 
-                    service.Create(projectCategoryDto);
+                    var id = await service.CreateAsync(projectCategoryDto);
 
-                    var projectCategory = service.GetAll().Where(p => p.ShortDescription == shortDescription).FirstOrDefault();
+                    var projectCategory = await service.GetAsync(id);
 
                     ValidateProjectCategory(projectCategory, null, shortDescription, description);
                 }
@@ -46,7 +49,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData(1)]
             [InlineData(2)]
-            public void WhenDeletingExistingCategory_DeleteSuccessfully(int id)
+            public async Task WhenDeletingExistingCategory_DeleteSuccessfully(int id)
             {
                 var options = Helper.GetContextOptions();
 
@@ -56,12 +59,12 @@ namespace DMS.Tests
                 {
                     var service = new ProjectCategoryService(context);
 
-                    var categoryBeforeDelete = service.Get(id);
+                    var categoryBeforeDelete = service.GetAsync(id);
                     Assert.NotNull(categoryBeforeDelete);
 
-                    service.Delete(id);
+                    await service.DeleteAsync(id);
 
-                    var deletedCategory = service.Get(id);
+                    var deletedCategory = await service.GetAsync(id);
                     Assert.Null(deletedCategory);
                 }
             }
@@ -69,7 +72,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData(100)]
             [InlineData(200)]
-            public void WhenDeletingNonExistingCategory_ThrowsException(int id)
+            public async Task WhenDeletingNonExistingCategory_ThrowsException(int id)
             {
                 var options = Helper.GetContextOptions();
 
@@ -79,7 +82,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectCategoryService(context);
 
-                    Assert.ThrowsAny<ArgumentNullException>(() => service.Delete(id));
+                    await Assert.ThrowsAsync<RecordNotFoundException>(() => service.DeleteAsync(id));
                 }
             }
         }
@@ -90,7 +93,7 @@ namespace DMS.Tests
             [InlineData(1, "Educational", "Scholarship for primary, seconday or higher education.")]
             [InlineData(2, "Self Employment", "One-off donation for socially important matter.")]
             [InlineData(3, "Missalanious", "Donation for uncategorized purpose.")]
-            public void WhenPassingValidId_ReturnsCategory(int id, string shortDescription, string description)
+            public async Task WhenPassingValidId_ReturnsCategory(int id, string shortDescription, string description)
             {
                 var options = Helper.GetContextOptions();
 
@@ -100,7 +103,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectCategoryService(context);
 
-                    var category = service.Get(id);
+                    var category = await service.GetAsync(id);
 
                     ValidateProjectCategory(category, id, shortDescription, description);                    
                 }
@@ -110,7 +113,7 @@ namespace DMS.Tests
             [InlineData(10)]
             [InlineData(100)]
             [InlineData(101)]
-            public void WhenPassingInvalidIds_ReturnsNull(int id)
+            public async Task WhenPassingInvalidIds_ReturnsNull(int id)
             {
                 var options = Helper.GetContextOptions();
 
@@ -120,7 +123,7 @@ namespace DMS.Tests
                 {
                     var service = new ProjectCategoryService(context);
 
-                    var category = service.Get(id);
+                    var category = await service.GetAsync(id);
 
                     Assert.Null(category);
                 }
@@ -130,7 +133,7 @@ namespace DMS.Tests
         public class GetAll
         {
             [Fact]
-            public void WhenThereAreCategories_ReturnsAll()
+            public async Task WhenThereAreCategories_ReturnsAll()
             {
                 var options = Helper.GetContextOptions();
 
@@ -139,20 +142,20 @@ namespace DMS.Tests
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectCategoryService(context);
-                    var categories = service.GetAll();
+                    var categories = await service.GetAllAsync();
                     Assert.Equal(3, categories.Count);
                 }
             }
 
             [Fact]
-            public void WhenThereAreNoProjects_ReturnsNon()
+            public async Task WhenThereAreNoProjects_ReturnsNon()
             {
                 var options = Helper.GetContextOptions();
 
                 using (var context = new DataContext(options))
                 {
                     var service = new ProjectCategoryService(context);
-                    var categories = service.GetAll();
+                    var categories = await service.GetAllAsync();
 
                     Assert.Equal(0, categories.Count);
                 }
@@ -164,7 +167,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData(1, "Educational - Updated", "Scholarship for primary, seconday or higher education. - Updated")]
             [InlineData(2, "Self Employment", "Updated Description")]
-            public void WhenUpdatingExistingCategory_UpdateSuccessfully(int id, string shortDescription, string description)
+            public async Task WhenUpdatingExistingCategory_UpdateSuccessfully(int id, string shortDescription, string description)
             {
                 var options = Helper.GetContextOptions();
 
@@ -181,9 +184,9 @@ namespace DMS.Tests
                         Description = description
                     };
 
-                    service.Update(categoryDto);
+                    await service.UpdateAsync(categoryDto);
 
-                    var updatedProject = service.Get(id);
+                    var updatedProject = await service.GetAsync(id);
 
                     ValidateProjectCategory(updatedProject, id, shortDescription, description);
                 }
@@ -192,7 +195,7 @@ namespace DMS.Tests
             [Theory]
             [InlineData(100, "Educational - Updated", "Scholarship for primary, seconday or higher education. - Updated")]
             [InlineData(200, "Self Employment", "Updated Description")]
-            public void WhenUpdatingNonExistingCategory_ThrowsException(int id, string shortDescription, string description)
+            public async Task WhenUpdatingNonExistingCategory_ThrowsException(int id, string shortDescription, string description)
             {
                 var options = Helper.GetContextOptions();
 
@@ -209,7 +212,7 @@ namespace DMS.Tests
                         Description = description
                     };
 
-                    Assert.Throws<NullReferenceException>(() => service.Update(categoryDto));
+                    await Assert.ThrowsAsync<RecordNotFoundException>(() => service.UpdateAsync(categoryDto));
                 }
             }
         }

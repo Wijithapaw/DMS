@@ -6,16 +6,10 @@ namespace DMS.Utills.CustomExceptions
 {
     public class DMSException : Exception
     {
-        public string CustomError { get; set; }
+        public DMSException() : base("Unknown error occurred") { }
 
-        public DMSException(string error)
-        {
-            CustomError = error;
-        }
+        public DMSException(string message) : base(message) { }
 
-        public override string ToString()
-        {
-            return CustomError;
-        }
+        public DMSException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

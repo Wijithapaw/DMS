@@ -4,6 +4,9 @@ using System.Linq;
 using DMS.Data.Entities;
 using DMS.Data;
 using DMS.Domain.Dtos;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using DMS.Domain.Dtos.Project;
 
 namespace DMS.Services
 {
@@ -16,7 +19,7 @@ namespace DMS.Services
             _dataContext = dataContext;
         }
 
-        public void Create(ProjectDto projectDto)
+        public async Task<int> CreateAsync(ProjectDto projectDto)
         {
             var project = new Project
             {
@@ -28,64 +31,72 @@ namespace DMS.Services
             };
 
             _dataContext.Projects.Add(project);
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
+
+            return project.Id;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var project = _dataContext.Projects.Find(id);
             _dataContext.Projects.Remove(project);
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
 
-        public ProjectDto Get(int id)
+        public async Task<ProjectDto> GetAsync(int id)
         {
-            return _dataContext.Projects.Where(p => p.Id == id)
+            var project = await _dataContext.Projects.Where(p => p.Id == id)
                     .Select(p => new ProjectDto
                     {
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
+                        ProjectCategoryId = p.ProjectCategoryId,
                         ProjectCategory = p.ProjectCategory.Title,
                         StartDate = p.StartDate,
-                        EndDate = p.EndDate
-                    }).FirstOrDefault();
+                        EndDate = p.EndDate,
+                        RowVersion = p.RowVersion
+                    }).FirstOrDefaultAsync();
+
+            return project;
         }
 
-        public ICollection<ProjectDto> GetAll()
+        public async Task<ICollection<ProjectDto>> GetAllAsync()
         {
-            var projects = _dataContext.Projects
+            var projects = await _dataContext.Projects
                     .Select(p => new ProjectDto
                     {
                         Id = p.Id,
                         Title = p.Title,
                         Description = p.Description,
+                        ProjectCategoryId = p.ProjectCategoryId,
                         ProjectCategory = p.ProjectCategory.Title,
                         StartDate = p.StartDate,
                         EndDate = p.EndDate
-                    }).ToList();
+                    }).ToListAsync();
 
             return projects;
         }
 
-        public ICollection<ProjectDto> GetAll(string category)
+        public async Task<ICollection<ProjectDto>> GetAllAsync(string category)
         {
-            var projects = _dataContext.Projects
+            var projects = await _dataContext.Projects
                     .Where(p => p.ProjectCategory.Title == category)
                      .Select(p => new ProjectDto
                      {
                          Id = p.Id,
                          Title = p.Title,
                          Description = p.Description,
+                         ProjectCategoryId = p.ProjectCategoryId,
                          ProjectCategory = p.ProjectCategory.Title,
                          StartDate = p.StartDate,
                          EndDate = p.EndDate
-                     }).ToList();
+                     }).ToListAsync();
 
             return projects;
         }
 
-        public void Update(ProjectDto projectDto)
+        public async Task UpdateAsync(ProjectDto projectDto)
         {
             var project = _dataContext.Projects.Find(projectDto.Id);
 
@@ -94,8 +105,9 @@ namespace DMS.Services
             project.ProjectCategoryId = projectDto.ProjectCategoryId;
             project.StartDate = projectDto.StartDate;
             project.EndDate = projectDto.EndDate;
+            project.RowVersion = projectDto.RowVersion;
 
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

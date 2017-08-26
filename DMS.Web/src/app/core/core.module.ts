@@ -2,6 +2,7 @@ import { NgModule, Optional, SkipSelf } from '@angular/core'
 
 import { AppConfigService } from './services/app-config.service';
 import { throwIfAlreadyLoaded } from './module-import-guard';
+import { UserSessionService } from './services/user-session.service';
 
 @NgModule({
     imports: [
@@ -11,7 +12,8 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 
     ],
     providers: [
-        AppConfigService
+        AppConfigService,
+        UserSessionService
     ]
 })
 export class CoreModule {

@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using DMS.Domain.Dtos;
 using DMS.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
+using DMS.Domain.Dtos.Account;
+using DMS.Domain.Dtos.User;
 
 namespace DMS.WebApi.Controllers
 {
+    [Authorize]
     [Produces("application/json")]
     [Route("api/Account")]
     public class AccountController : Controller
@@ -20,23 +24,26 @@ namespace DMS.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [HttpPost("Register")]
         public async Task<int> RegisterUser(UserDto userDto)
         {
             var id = await _accountService.RegisterUser(userDto);
             return id;
         }
 
-        public async Task<AuthToken> Login(LoginDto loginDto)
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public async Task<AuthToken> Login([FromBody] LoginDto loginDto)
         {
             var authToken = await _accountService.CreateToken(loginDto);
             return authToken;
         }
 
-        public async Task<UserDto> GetCurrentUser()
+        [HttpGet("CurrentUser")]
+        public async Task<UserLDto> GetCurrentUser()
         {
             var user = await _accountService.GetCurentUser(this.User);
             return user;
         }
-
     }
 }

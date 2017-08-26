@@ -1,26 +1,42 @@
 ﻿using DMS.Data.Entities;
+using DMS.Utills.CustomClaims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 
 namespace DMS.Data
 {
     public static class DbInitializer
     {
-        public async static void Initialize(DataContext context, UserManager<ApplicationUser> userManager)
+        public async static void Initialize(DataContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager)
         {
             //Comment out this section once the initial phase of development is done
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+            //context.Database.EnsureDeleted();
+            //context.Database.EnsureCreated();
 
             //Uncomment this section once the initial phase of development is done
             //context.Database.Migrate();
 
             if (context.Users.Any())
                 return;
+
+            var adminRole = new IdentityRole<int>("Admin");
+            var donorRole = new IdentityRole<int>("Donor");
+
+            var roleResult = await roleManager.CreateAsync(adminRole);
+            await roleManager.CreateAsync(donorRole);
+            
+            await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.view"));
+            await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.edit"));
+            await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.create"));
+            await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "accounts.manage"));
+            await roleManager.AddClaimAsync(donorRole, new Claim(CustomClaimTypes.Permission, "projects.view"));
+            await roleManager.AddClaimAsync(donorRole, new Claim(CustomClaimTypes.Permission, "projects.create"));
 
             var adminUser = new ApplicationUser
             {
@@ -36,10 +52,11 @@ namespace DMS.Data
                 LastUpdatedDate = DateTime.Now
             };
 
-            var result = await userManager.CreateAsync(adminUser, "Pwd123");
+            var userResult = await userManager.CreateAsync(adminUser, "Pwd123");
 
-            if (result.Succeeded)
+            if (userResult.Succeeded && roleResult.Succeeded)
             {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
 
                 var donees = new Donee[]
                     {
@@ -71,6 +88,23 @@ namespace DMS.Data
                 context.Projects.AddRange(projects);
                 context.SaveChanges();
             }
+
+            var donorUser = new ApplicationUser
+            {
+                Email = "widura@outlook.com",
+                FirstName = "Widura",
+                LastName = "Wijenayake",
+                Birthday = new DateTime(1990, 8, 1),
+                Active = true,
+                UserName = "widura@outlook.com",
+                CreatedBy = 1,
+                CreatedDate = DateTime.Now,
+                LastUpdatedBy = 1,
+                LastUpdatedDate = DateTime.Now
+            };
+
+            await userManager.CreateAsync(donorUser, "Pwd123");
+            await userManager.AddToRoleAsync(donorUser, "Donor");
         }
     }
 }

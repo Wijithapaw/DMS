@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DMS.Domain.Dtos
+namespace DMS.Domain.Dtos.Project
 {
     public class ProjectDto
     {
@@ -17,5 +17,7 @@ namespace DMS.Domain.Dtos
         public DateTime StartDate { get; set; }
 
         public DateTime? EndDate { get; set; }
+
+        public byte[] RowVersion { get; set; }
     }
 }

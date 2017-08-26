@@ -18,6 +18,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using DMS.WebApi.ErrorHandling;
+using Microsoft.AspNetCore.Http;
+using DMS.Utills;
+using DMS.WebApi.Utills;
+using DMS.Utills.CustomClaims;
 
 namespace DMS.WebApi
 {
@@ -62,24 +67,42 @@ namespace DMS.WebApi
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 10;
 
-                // Cookie settings
-                //options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
-                //options.Cookies.ApplicationCookie.LoginPath = "/Account/LogIn";
-                //options.Cookies.ApplicationCookie.LogoutPath = "/Account/LogOut";
-
                 // User settings
                 options.User.RequireUniqueEmail = true;
             });
 
-            services.AddScoped<IProjectsService, ProjectsService>();
-            services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
+            services.AddAuthorization(options => {
+                options.AddPolicy("View Projects",
+                    policy => policy.RequireClaim(CustomClaimTypes.Permission, new string[] { "projects.view" }));
+
+                options.AddPolicy("Manage Projects",
+                    policy => policy.RequireClaim(CustomClaimTypes.Permission, new string[] { "projects.edit" }));
+            });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IEnvironmentDescriptor, WebEnvironmentDescriptor>();
+            services.AddTransient<IProjectsService, ProjectsService>();
+            services.AddTransient<IProjectCategoryService, ProjectCategoryService>();
+            services.AddTransient<IAccountService, AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DataContext context, UserManager<ApplicationUser> userManager)
+        public void Configure(IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory, 
+            DataContext context, 
+            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole<int>> roleManager)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                //builder.WithOrigins("http://localhost:4200")
+                //    .AllowAnyMethod()
+                //    .AllowAnyHeader());
 
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
@@ -98,7 +121,7 @@ namespace DMS.WebApi
             app.UseMvc();
 
             //Apply any pending migrations
-            DbInitializer.Initialize(context, userManager);
+            DbInitializer.Initialize(context, userManager, roleManager);
         }
     }
 }

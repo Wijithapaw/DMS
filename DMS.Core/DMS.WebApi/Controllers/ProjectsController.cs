@@ -2,12 +2,16 @@
 using Microsoft.AspNetCore.Mvc;
 using DMS.Domain.Services;
 using DMS.Domain.Dtos;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using DMS.Domain.Dtos.Project;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("Manage Projects")]
     public class ProjectsController : Controller
     {
         private IProjectsService _projectsService;
@@ -25,40 +29,40 @@ namespace DMS.WebApi.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<ProjectDto> Get()
+        public async Task<IEnumerable<ProjectDto>> Get()
         {
-            var projectsList = _projectsService.GetAll();
+            var projectsList = await _projectsService.GetAllAsync();
             return projectsList;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ProjectDto Get(int id)
+        public async Task<ProjectDto> Get(int id)
         {
-            var project = _projectsService.Get(id);
+            var project = await _projectsService.GetAsync(id);
             return project;
         }
 
         [Route("GetByCategory")]
-        public IEnumerable<ProjectDto> Get([FromQuery] string category)
+        public async Task<IEnumerable<ProjectDto>> Get([FromQuery] string category)
         {
-            var projectsList = _projectsService.GetAll(category);
+            var projectsList = await _projectsService.GetAllAsync(category);
             return projectsList;
         }        
 
         // POST api/values
         [HttpPost]
-        public IActionResult Post([FromBody]ProjectDto projectDto)
+        public async Task<int> Post([FromBody]ProjectDto projectDto)
         {
-            _projectsService.Create(projectDto);
-            return Ok();
+            var id = await _projectsService.CreateAsync(projectDto);
+            return id;
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]ProjectDto project)
+        [HttpPut]
+        public async Task Put([FromBody]ProjectDto project)
         {
-            _projectsService.Update(project);
+            await _projectsService.UpdateAsync(project);
         }        
     }
 }

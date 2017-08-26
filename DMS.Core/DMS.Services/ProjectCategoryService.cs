@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using DMS.Data.Entities;
 using DMS.Data;
-using DMS.Domain.Dtos;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using DMS.Domain.Dtos.Project;
 
 namespace DMS.Services
 {
@@ -15,7 +17,7 @@ namespace DMS.Services
         {
             _dataContext = dataContext;
         }
-        public void Create(ProjectCategoryDto projectCategoryDto)
+        public async Task<int> CreateAsync(ProjectCategoryDto projectCategoryDto)
         {
             var projectCategory = new ProjectCategory
             {
@@ -24,49 +26,50 @@ namespace DMS.Services
             };
 
             _dataContext.ProjectCategories.Add(projectCategory);
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
+            return projectCategory.Id;
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var projectCategory = _dataContext.ProjectCategories.Find(id);
             _dataContext.ProjectCategories.Remove(projectCategory);
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
 
-        public ProjectCategoryDto Get(int id)
+        public async Task<ProjectCategoryDto> GetAsync(int id)
         {
-            var projectCategory = _dataContext.ProjectCategories
+            var projectCategory = await _dataContext.ProjectCategories
                                         .Where(c => c.Id == id)
                                         .Select(c => new ProjectCategoryDto
                                         {
                                             Id = c.Id,
                                             ShortDescription = c.Title,
                                             Description = c.Description
-                                        }).FirstOrDefault();
+                                        }).FirstOrDefaultAsync();
             return projectCategory;
         }
 
-        public ICollection<ProjectCategoryDto> GetAll()
+        public async Task<ICollection<ProjectCategoryDto>> GetAllAsync()
         {
-            var categories = _dataContext.ProjectCategories
+            var categories = await _dataContext.ProjectCategories
                 .Select(c => new ProjectCategoryDto
                 {
                     ShortDescription = c.Title,
                     Description = c.Description
-                }).ToList();
+                }).ToListAsync();
 
             return categories;
         }
 
-        public void Update(ProjectCategoryDto categoryDto)
+        public async Task UpdateAsync(ProjectCategoryDto categoryDto)
         {
             var category = _dataContext.ProjectCategories.Find(categoryDto.Id);
 
             category.Title = categoryDto.ShortDescription;
             category.Description = categoryDto.Description;
 
-            _dataContext.SaveChanges();
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

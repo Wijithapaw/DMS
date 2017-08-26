@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DMS.Utills
+namespace DMS.WebApi.ErrorHandling
 {
     public class ErrorLoggingMiddleware
     {

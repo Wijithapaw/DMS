@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using DMS.Domain.Services;
 using DMS.Domain.Dtos;
+using System.Threading.Tasks;
+using DMS.Domain.Dtos.Project;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,34 +21,40 @@ namespace DMS.WebApi.Controllers
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<ProjectCategoryDto> Get()
+        public async Task<IEnumerable<ProjectCategoryDto>> Get()
         {
-            return _projectCategoryService.GetAll();
+            var projectCategories = await _projectCategoryService.GetAllAsync();
+            return projectCategories;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public ProjectCategoryDto Get(int id)
+        public async Task<ProjectCategoryDto> Get(int id)
         {
-            return _projectCategoryService.Get(id);
+            var projectCategory = await _projectCategoryService.GetAsync(id);
+            return projectCategory;
         }
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public async Task<int> Post([FromBody]ProjectCategoryDto data)
         {
+            var id = await _projectCategoryService.CreateAsync(data);
+            return id;
         }
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task Put([FromBody]ProjectCategoryDto data)
         {
+            await _projectCategoryService.UpdateAsync(data);
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
+            await _projectCategoryService.DeleteAsync(id);
         }
     }
 }

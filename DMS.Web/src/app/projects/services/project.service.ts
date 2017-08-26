@@ -14,13 +14,7 @@ export class ProjectService {
     getProjects(): Promise<Project[]> {
         return this.dataService.get('projects')
             .toPromise()
-            .then(response => {
-                var projects = response.json() as Project[];
-                console.log('projects');
-                console.log(projects);
-                return projects;
-            })
-            .catch((reason) => console.error(reason));
+            .then(response => response.json() as Project[]);
     }
 
     getProject(id: number): Promise<Project> {
@@ -30,8 +24,7 @@ export class ProjectService {
     }
 
     updateProject(project: Project) {
-        return this.dataService.put('projects', '', project.id, JSON.stringify(project))
+        return this.dataService.put('projects', '',project)
             .toPromise()
-            .then((response) => { return true; });
     }
 }

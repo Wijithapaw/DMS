@@ -4,4 +4,5 @@
     description: string;
     startDate: Date;
     endDate: Date;
+    rowVersion: string;
 }

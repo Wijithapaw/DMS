@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DMS.Domain.Dtos
+namespace DMS.Domain.Dtos.Account
 {
     public class AuthToken
     {

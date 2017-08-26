@@ -1,18 +1,19 @@
-﻿using DMS.Domain.Dtos;
+﻿using DMS.Domain.Dtos.Project;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DMS.Domain.Services
 {
     public interface IProjectCategoryService
     {
-        void Create(ProjectCategoryDto project);
+        Task<int> CreateAsync(ProjectCategoryDto project);
 
-        void Delete(int id);
+        Task DeleteAsync(int id);
 
-        ProjectCategoryDto Get(int id);
+        Task<ProjectCategoryDto> GetAsync(int id);
 
-        ICollection<ProjectCategoryDto> GetAll();
+        Task<ICollection<ProjectCategoryDto>> GetAllAsync();
 
-        void Update(ProjectCategoryDto project);
+        Task UpdateAsync(ProjectCategoryDto project);
     }
 }
