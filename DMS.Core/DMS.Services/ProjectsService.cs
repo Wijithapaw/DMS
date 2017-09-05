@@ -7,6 +7,7 @@ using DMS.Domain.Dtos;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DMS.Domain.Dtos.Project;
+using DMS.Utills.CustomExceptions;
 
 namespace DMS.Services
 {
@@ -39,6 +40,10 @@ namespace DMS.Services
         public async Task DeleteAsync(int id)
         {
             var project = _dataContext.Projects.Find(id);
+
+            if (project == null)
+                throw new RecordNotFoundException("Project", id);
+
             _dataContext.Projects.Remove(project);
             await _dataContext.SaveChangesAsync();
         }
@@ -96,16 +101,19 @@ namespace DMS.Services
             return projects;
         }
 
-        public async Task UpdateAsync(ProjectDto projectDto)
+        public async Task UpdateAsync(ProjectDto dto)
         {
-            var project = _dataContext.Projects.Find(projectDto.Id);
+            var project = _dataContext.Projects.Find(dto.Id);
 
-            project.Title = projectDto.Title;
-            project.Description = projectDto.Description;
-            project.ProjectCategoryId = projectDto.ProjectCategoryId;
-            project.StartDate = projectDto.StartDate;
-            project.EndDate = projectDto.EndDate;
-            project.RowVersion = projectDto.RowVersion;
+            if (project == null)
+                throw new RecordNotFoundException("Project", dto.Id);
+
+            project.Title = dto.Title;
+            project.Description = dto.Description;
+            project.ProjectCategoryId = dto.ProjectCategoryId;
+            project.StartDate = dto.StartDate;
+            project.EndDate = dto.EndDate;
+            project.RowVersion = dto.RowVersion;
 
             await _dataContext.SaveChangesAsync();
         }

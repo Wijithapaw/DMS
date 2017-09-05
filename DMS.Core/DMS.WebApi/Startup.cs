@@ -14,7 +14,6 @@ using DMS.Domain;
 using DMS.Data;
 using Microsoft.EntityFrameworkCore;
 using DMS.Data.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -23,6 +22,13 @@ using Microsoft.AspNetCore.Http;
 using DMS.Utills;
 using DMS.WebApi.Utills;
 using DMS.Utills.CustomClaims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
+using System.Net;
+using DMS.WebApi.AuthRequirements;
+using Microsoft.AspNetCore.Authorization;
+using DMS.Utills.ConfigSettings;
+using Microsoft.Extensions.Options;
 
 namespace DMS.WebApi
 {
@@ -43,12 +49,46 @@ namespace DMS.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var jwtSettings = Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+
             services.AddDbContext<DataContext>(options =>
               options.UseSqlServer(Configuration.GetConnectionString("DataContext")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole<int>>()
-            .AddEntityFrameworkStores<DataContext, int>()
-            .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
+                .AddEntityFrameworkStores<DataContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.Audience = jwtSettings.Audience;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidIssuer = jwtSettings.Issuer,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SigningKey))
+                };
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Events.OnRedirectToLogin = ctx =>
+                {
+                   ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                   return Task.FromResult(0);
+                };
+
+                options.Events.OnRedirectToAccessDenied = ctx =>
+                {
+                    ctx.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    return Task.FromResult(0);
+                };
+            });
 
             // Add framework services.
             services.AddMvc();
@@ -71,19 +111,31 @@ namespace DMS.WebApi
                 options.User.RequireUniqueEmail = true;
             });
 
-            services.AddAuthorization(options => {
-                options.AddPolicy("View Projects",
-                    policy => policy.RequireClaim(CustomClaimTypes.Permission, new string[] { "projects.view" }));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ManageProjects",
+                    policy => policy.Requirements.Add(new ManageProjectRequirement()));
 
-                options.AddPolicy("Manage Projects",
-                    policy => policy.RequireClaim(CustomClaimTypes.Permission, new string[] { "projects.edit" }));
+                options.AddPolicy("ManageAccounts",
+                    policy => policy.Requirements.Add(new ManageAccountsRequirment()));
+
+                options.AddPolicy("ManageSystemSettings",
+                   policy => policy.Requirements.Add(new ManageSystemSettingsRequirment()));
             });
+
+            services.AddSingleton<IAuthorizationHandler, ManageAccountsHandler>();
+            services.AddSingleton<IAuthorizationHandler, ManageSystemSettingsHandler>();
+            services.AddSingleton<IAuthorizationHandler, ManageProjectHandler>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IEnvironmentDescriptor, WebEnvironmentDescriptor>();
             services.AddTransient<IProjectsService, ProjectsService>();
             services.AddTransient<IProjectCategoryService, ProjectCategoryService>();
             services.AddTransient<IAccountService, AccountService>();
+
+            services.Configure<CorsSettings>(Configuration.GetSection("CorsSettings"));
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,31 +144,21 @@ namespace DMS.WebApi
             ILoggerFactory loggerFactory, 
             DataContext context, 
             UserManager<ApplicationUser> userManager, 
-            RoleManager<IdentityRole<int>> roleManager)
+            RoleManager<ApplicationRole> roleManager,
+            IOptions<CorsSettings> corsSettings)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-                //builder.WithOrigins("http://localhost:4200")
-                //    .AllowAnyMethod()
-                //    .AllowAnyHeader());
+            app.UseCors(builder =>
+                builder.WithOrigins(corsSettings.Value.Origin)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
 
-            app.UseJwtBearerAuthentication(new JwtBearerOptions()
-            {
-                AutomaticAuthenticate = true,
-                AutomaticChallenge = true,
-                TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidIssuer = "localhost:4200",
-                    ValidAudience = "localhost:4200",
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKey_GetThisFromAppSettings")),
-                    ValidateLifetime = true
-                }
-            });
+            app.UseAuthentication();
 
             app.UseMvc();
 

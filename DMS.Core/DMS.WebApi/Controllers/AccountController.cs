@@ -12,6 +12,7 @@ using DMS.Domain.Dtos.User;
 
 namespace DMS.WebApi.Controllers
 {
+    
     [Authorize]
     [Produces("application/json")]
     [Route("api/Account")]
@@ -24,6 +25,7 @@ namespace DMS.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [Authorize("ManageAccounts")]
         [HttpPost("Register")]
         public async Task<int> RegisterUser(UserDto userDto)
         {
@@ -38,7 +40,7 @@ namespace DMS.WebApi.Controllers
             var authToken = await _accountService.CreateToken(loginDto);
             return authToken;
         }
-
+       
         [HttpGet("CurrentUser")]
         public async Task<UserLDto> GetCurrentUser()
         {

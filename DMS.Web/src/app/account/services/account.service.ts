@@ -17,7 +17,7 @@ export class AccountService {
     public login(loginData: LoginDto){
         return this.dataService.post('account', 'login', loginData)
         .toPromise()
-        .then(res => res.json() as AuthToken)
+        .then(res => { console.log(res.json()); return res.json() as AuthToken })
         .then(token => this.persistAuthToekn(token, loginData.rememberMe))
         .then(() => this.setCurrentUserInSession());
     }

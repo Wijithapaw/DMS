@@ -4,12 +4,14 @@ using DMS.Domain.Services;
 using DMS.Domain.Dtos;
 using System.Threading.Tasks;
 using DMS.Domain.Dtos.Project;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize("ManageSystemSettings")]
     public class ProjectCategoriesController : Controller
     {
         private IProjectCategoryService _projectCategoryService;

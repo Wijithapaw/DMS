@@ -3,10 +3,12 @@ using DMS.Domain.Dtos.Account;
 using DMS.Domain.Dtos.User;
 using DMS.Domain.Services;
 using DMS.Utills;
+using DMS.Utills.ConfigSettings;
 using DMS.Utills.CustomExceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
@@ -22,19 +24,27 @@ namespace DMS.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signinManager;
-        RoleManager<IdentityRole<int>> _roleManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEnvironmentDescriptor _env;
+        private readonly JwtSettings _jwtSettings;
+        private readonly AppSettings _appSettings;
 
         public AccountService(UserManager<ApplicationUser> userManager, 
             SignInManager<ApplicationUser> signinManager,
-            RoleManager<IdentityRole<int>> roleManager,
-            IHttpContextAccessor httpContextAccessor)
+            RoleManager<ApplicationRole> roleManager,
+            IHttpContextAccessor httpContextAccessor,
+            IEnvironmentDescriptor env,
+            IOptions<JwtSettings> jwtSettings,
+            IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;
             _signinManager = signinManager;
             _roleManager = roleManager;
             _httpContextAccessor = httpContextAccessor;
+            _env = env;
+            _jwtSettings = jwtSettings.Value;
+            _appSettings = appSettings.Value;
         }
 
         public async Task<AuthToken> CreateToken(LoginDto loginDto)
@@ -42,7 +52,9 @@ namespace DMS.Services
             var user = await _userManager.FindByNameAsync(loginDto.Username);
             if (user != null)
             {
-                if (_signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false).Result.Succeeded)
+                var signinResult = await _signinManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+                if (signinResult.Succeeded)
                 {
                     var userClaims = await GetUserClaims(user);
 
@@ -56,12 +68,12 @@ namespace DMS.Services
                         new Claim(ClaimTypes.Name, user.UserName)
                     }.Union(userClaims).Union(rolesClaims);
 
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SuperSecretKey_GetThisFromAppSettings"));
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SigningKey));
                     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
                     var token = new JwtSecurityToken(
-                        issuer: "localhost:4200",
-                        audience: "localhost:4200",
+                        issuer: _jwtSettings.Issuer,
+                        audience: _jwtSettings.Audience,
                         claims: claims,
                         expires: DateTime.UtcNow.AddMinutes(15),
                         signingCredentials: creds
@@ -119,7 +131,7 @@ namespace DMS.Services
                 LastUpdatedDate = DateTime.Now
             };
 
-            var result = await _userManager.CreateAsync(user, "Pwd123");
+            var result = await _userManager.CreateAsync(user, _appSettings.DefaultPassword);
             if (result.Succeeded)
                 return user.Id;
 

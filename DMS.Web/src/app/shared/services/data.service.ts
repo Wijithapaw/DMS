@@ -57,13 +57,24 @@ export class DataService {
     }
 
     private handleException(response: Response): Observable<Response> {
-        if (response.status == 401 || response.status == 403) {
+        if (response.status == 401) {
             localStorage.removeItem("authToken");
             sessionStorage.removeItem("authToken");
 
             let link = ['/login', { returnUrl: this.router.url }]; 
             this.router.navigate(link);
-        } else {
+        }else if (response.status == 403) {
+
+            localStorage.removeItem("authToken");
+            sessionStorage.removeItem("authToken");
+
+            let link = ['/login']; 
+            this.router.navigate(link);
+
+            //Show Forbiden Access Message
+        }         
+        else {
+            //Show Error Message
             console.log(response.json())
         }
         throw Observable.throw(response);

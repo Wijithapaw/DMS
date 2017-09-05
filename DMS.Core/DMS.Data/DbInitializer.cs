@@ -13,7 +13,7 @@ namespace DMS.Data
 {
     public static class DbInitializer
     {
-        public async static void Initialize(DataContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<int>> roleManager)
+        public async static void Initialize(DataContext context, UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
             //Comment out this section once the initial phase of development is done
             //context.Database.EnsureDeleted();
@@ -25,8 +25,8 @@ namespace DMS.Data
             if (context.Users.Any())
                 return;
 
-            var adminRole = new IdentityRole<int>("Admin");
-            var donorRole = new IdentityRole<int>("Donor");
+            var adminRole = new ApplicationRole("Admin");
+            var donorRole = new ApplicationRole("Donor");
 
             var roleResult = await roleManager.CreateAsync(adminRole);
             await roleManager.CreateAsync(donorRole);
@@ -34,6 +34,7 @@ namespace DMS.Data
             await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.view"));
             await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.edit"));
             await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "projects.create"));
+            await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "system.settings.manage"));
             await roleManager.AddClaimAsync(adminRole, new Claim(CustomClaimTypes.Permission, "accounts.manage"));
             await roleManager.AddClaimAsync(donorRole, new Claim(CustomClaimTypes.Permission, "projects.view"));
             await roleManager.AddClaimAsync(donorRole, new Claim(CustomClaimTypes.Permission, "projects.create"));

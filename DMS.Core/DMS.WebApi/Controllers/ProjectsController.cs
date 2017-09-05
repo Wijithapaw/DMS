@@ -11,7 +11,7 @@ using DMS.Domain.Dtos.Project;
 namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize("Manage Projects")]
+    [Authorize("ManageProjects")]
     public class ProjectsController : Controller
     {
         private IProjectsService _projectsService;

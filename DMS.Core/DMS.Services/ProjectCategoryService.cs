@@ -6,6 +6,7 @@ using DMS.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DMS.Domain.Dtos.Project;
+using DMS.Utills.CustomExceptions;
 
 namespace DMS.Services
 {
@@ -33,6 +34,10 @@ namespace DMS.Services
         public async Task DeleteAsync(int id)
         {
             var projectCategory = _dataContext.ProjectCategories.Find(id);
+
+            if (projectCategory == null)
+                throw new RecordNotFoundException("ProjectCategory", id);
+
             _dataContext.ProjectCategories.Remove(projectCategory);
             await _dataContext.SaveChangesAsync();
         }
@@ -62,12 +67,15 @@ namespace DMS.Services
             return categories;
         }
 
-        public async Task UpdateAsync(ProjectCategoryDto categoryDto)
+        public async Task UpdateAsync(ProjectCategoryDto dto)
         {
-            var category = _dataContext.ProjectCategories.Find(categoryDto.Id);
+            var category = _dataContext.ProjectCategories.Find(dto.Id);
 
-            category.Title = categoryDto.ShortDescription;
-            category.Description = categoryDto.Description;
+            if (category == null)
+                throw new RecordNotFoundException("ProjectCategory", dto.Id);
+
+            category.Title = dto.ShortDescription;
+            category.Description = dto.Description;
 
             await _dataContext.SaveChangesAsync();
         }

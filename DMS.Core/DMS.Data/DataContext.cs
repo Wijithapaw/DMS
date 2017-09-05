@@ -6,10 +6,11 @@ using DMS.Utills;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace DMS.Data
 {
-    public class DataContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
+    public class DataContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         IEnvironmentDescriptor _env;
 
