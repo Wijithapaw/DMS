@@ -21,6 +21,14 @@ namespace DMS.Tests
             [InlineData("Sholaship for Amal", "Start a workshop", 2, "Self Employment", "2017-2-1", "2018-2-28")]
             public async Task WhenPassingCorrectData_SuccessfullyCreate(string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
             {
+                DateTime d1 = new DateTime(2011, 1, 1);
+                DateTime d2 = DateTime.Now;
+                DateTime d3 = DateTime.UtcNow;
+
+
+
+                DateTime d4 = DateTime.Parse("2011-1-1");
+
                 var options = Helper.GetContextOptions();
 
                 CreateTestData(options);
