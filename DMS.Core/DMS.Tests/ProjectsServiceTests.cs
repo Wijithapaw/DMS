@@ -6,6 +6,7 @@ using DMS.Services;
 using DMS.Utills.CustomExceptions;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,12 +14,19 @@ using Xunit;
 namespace DMS.Tests
 {
     public class ProjectsServiceTests
-    {      
+    {
         public class Create
         {
-            [Theory]
-            [InlineData("Sholaship for Supun", "As a aid for university education", 1, "Educational", "2017-3-1", "2018-12-31")]
-            [InlineData("Sholaship for Amal", "Start a workshop", 2, "Self Employment", "2017-2-1", "2018-2-28")]
+            public static IEnumerable<object[]> DataCreate =>
+             new List<object[]>
+             {
+                new object[] { "Sholaship for Supun", "As a aid for university education", 1, "Educational", new DateTime(2017,3,1), new DateTime(2018, 12, 31)},
+                new object[] { "Sholaship for Amal", "Start a workshop", 2, "Self Employment",  new DateTime(2017,2,1), new DateTime(2017, 2, 28) },
+             };
+
+
+            [Theory]            
+            [MemberData(nameof(DataCreate))]
             public async Task WhenPassingCorrectData_SuccessfullyCreate(string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
             {
                 DateTime d1 = new DateTime(2011, 1, 1);
@@ -94,10 +102,16 @@ namespace DMS.Tests
 
         public class Get
         {
+            public static IEnumerable<object[]> Data_Get =>
+            new List<object[]>
+            {
+                new object[] { 1, "Scholaship for Asitha", "For higher education", "Educational", new DateTime(2017,1,1), new DateTime(2017,12,31)},
+                new object[] { 2, "Scholaship for Supun", "For O/L education", "Educational", new DateTime(2017,2,1), new DateTime(2018,3,31) },
+                new object[] { 3, "Scholaship for Viraj", "Aid for self employment", "Self Employment", new DateTime(2017, 3, 1), null }
+            };
+
             [Theory]
-            [InlineData(1, "Scholaship for Asitha", "For higher education", "Educational", "2017-1-1", "2017-12-31")]
-            [InlineData(2, "Scholaship for Supun", "For O/L education", "Educational", "2017-2-1", "2018-3-31")]
-            [InlineData(3, "Scholaship for Viraj", "Aid for self employment", "Self Employment", "2017-3-1", null)]
+            [MemberData(nameof(Data_Get))]
             public async Task WhenPassingValidIds_ReturnsProject(int id, string title, string description, string category, DateTime startDate, DateTime endDate)
             {
                 var options = Helper.GetContextOptions();
@@ -210,10 +224,16 @@ namespace DMS.Tests
 
         public class Update
         {
+            public static IEnumerable<object[]> Data_Update =>
+            new List<object[]>
+            {
+                new object[] { 1, "Scholaship for Asitha - Updated", "For higher education - Updated", 1, "Educational", new DateTime(2017,1,1), new DateTime(2017,12,31)},
+                new object[] { 2, "Scholaship for Supun", "Start Workshop", 2, "Self Employment", new DateTime(2017,2,1), new DateTime(2018,3,31) },
+                new object[] { 3, "Scholaship for Kasun - Updated", "Buy a sewing machine", 3, "Missalanious", new DateTime(2017, 5, 1), new DateTime(2019, 5, 1) }
+            };
+
             [Theory]
-            [InlineData(1, "Scholaship for Asitha - Updated", "For higher education - Updated", 1, "Educational", "2017-1-1", "2017-12-31")]
-            [InlineData(2, "Scholaship for Supun", "Start Workshop", 2, "Self Employment", "2017-2-1", "2018-3-31")]
-            [InlineData(3, "Scholaship for Kasun - Updated", "Buy a sewing machine", 3, "Missalanious", "2017-5-1", "2019-5-1")]
+            [MemberData(nameof(Data_Update))]
             public async Task WhenUpdatingExistingProject_UpdateSuccessfully(int id, string title, string description, int categoryId, string category, DateTime startDate, DateTime endDate)
             {
                 var options = Helper.GetContextOptions();
