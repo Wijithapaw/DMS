@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core'
+import { NgModule, ErrorHandler, Injectable } from '@angular/core'
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DataService } from './services/data.service';
 import { PageHeaderComponent } from './page-header/page-header.component';
+import { ErrorsHandler } from './services/error-handler';
 
 @NgModule({
     imports: [
@@ -21,7 +22,7 @@ import { PageHeaderComponent } from './page-header/page-header.component';
         PageHeaderComponent
     ],
     providers: [
-        DataService
+        DataService        
     ],
     exports: [
         //BrowserModule,

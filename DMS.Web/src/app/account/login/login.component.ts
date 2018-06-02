@@ -27,13 +27,14 @@ export class LoginComponent implements OnInit {
 
   public login(): void {
     this.accountService.login(this.loginData)
-      .then(() => {
-        let link = [this.returnUrl]
-        this.router.navigate(link);
-      })
-      .catch((response) => {
-        this.errorMessage = response.error.json().error;
-      });
+      .subscribe(
+        data => {
+          let link = [this.returnUrl]
+          this.router.navigate(link);
+        },
+        err => {
+          this.errorMessage = err.error.message;
+        })
   }
 
   public clearError() {

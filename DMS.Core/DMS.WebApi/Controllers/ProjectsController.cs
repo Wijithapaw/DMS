@@ -12,6 +12,7 @@ namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [Authorize("ManageProjects")]
+    //[AllowAnonymous]
     public class ProjectsController : Controller
     {
         private IProjectsService _projectsService;

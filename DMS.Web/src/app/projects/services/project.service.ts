@@ -1,26 +1,22 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Headers, Http } from '@angular/http';
 
-import 'rxjs/add/operator/toPromise';
 
 import { Project } from '../models/project';
 import { DataService } from '../../shared/services/data.service'
+import { Observable } from 'rxjs/internal/Observable';
 
 @Injectable()
 export class ProjectService {
 
     constructor(private dataService: DataService) { }
 
-    getProjects(): Promise<Project[]> {
-        return this.dataService.get('projects')
-            .toPromise()
-            .then(response => response.json() as Project[]);
+    getProjects(): Observable<Project[]>{
+        return this.dataService.get<Project[]>('projects');                
     }
 
-    getProject(id: number): Promise<Project> {
-        return this.dataService.get('projects', '', id)
-            .toPromise()
-            .then(response => response.json() as Project)
+    getProject(id: number): Observable<Project> {
+        return this.dataService.get<Project>('projects', '', id)
     }
 
     updateProject(project: Project) {

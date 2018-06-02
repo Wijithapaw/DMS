@@ -32,13 +32,13 @@ namespace DMS.WebApi.ErrorHandling
 
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            string error = "Unknown error occured while processsing the request";
+            string errorMsg = "Unknown error occured while processsing the request";
             var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
             if (exception is DMSException)
-                error = exception.Message;            
+                errorMsg = exception.Message;            
 
-            var result = JsonConvert.SerializeObject(new { error = error });
+            var result = JsonConvert.SerializeObject(new { message = errorMsg });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
             return context.Response.WriteAsync(result);

@@ -16,12 +16,16 @@ export class DonorsComponent implements OnInit {
     constructor(private donorService: DonorService) {
 
     }
-
-    getDonors(): void {
-        this.donorService.getDonors().then(donors => this.donors = donors);
-    }
-
+   
     ngOnInit(): void {
         this.getDonors();
     }
+
+    getDonors(): void {
+        this.donorService.getDonors()
+            .subscribe(
+                donors => this.donors = donors
+            );
+    }
+
 }

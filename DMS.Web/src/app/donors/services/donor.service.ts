@@ -1,23 +1,16 @@
-﻿import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/toPromise';
+import { Injectable } from '@angular/core';
+
 
 import { Donor } from '../models/donor';
 import { DataService } from '../../shared/services/data.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class DonorService {
 
     constructor(private dataService: DataService) {  }
 
-    getDonors(): Promise<Donor[]> {
-        return this.dataService.get('donors')
-            .toPromise()
-            .then(response => response.json() as Donor[])
-            //.catch(this.handleError);
-    }
-
-    getDonors2(): Promise<Donor[]> {
-        return new Promise<Donor[]>(resolve => setTimeout(resolve, 5000))
-            .then(() => this.getDonors());
+    getDonors(): Observable<Donor[]> {
+        return this.dataService.get<Donor[]>('donors');
     }
 }

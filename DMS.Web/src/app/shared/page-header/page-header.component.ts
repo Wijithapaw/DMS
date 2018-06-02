@@ -16,7 +16,6 @@ export class PageHeaderComponent {
   }
     buttonClick(event: any) {
         event.preventDefault();
-        console.log(`Header button clicked`);
         this.buttonClicked.emit();
     }
 }

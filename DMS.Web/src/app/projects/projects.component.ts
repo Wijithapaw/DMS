@@ -18,7 +18,8 @@ export class ProjectsComponent implements OnInit {
     constructor(private projectService: ProjectService, private router: Router) { }
 
     private getProjects(): void {
-        this.projectService.getProjects().then(projects => this.projects = projects);
+        this.projectService.getProjects()
+        .subscribe(data => this.projects = data);        
     }
 
     createNew(): void {

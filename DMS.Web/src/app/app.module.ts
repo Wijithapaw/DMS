@@ -1,7 +1,7 @@
 ﻿import './rxjs-extensions';
 
-import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { NgModule, ErrorHandler } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'
@@ -12,12 +12,13 @@ import { AppRoutingModule } from './app.routing';
 import { CoreModule } from './core/core.module';
 import { AuthorizedLayoutComponent } from './layout/authorized-layout/authorized-layout.component';
 import { UnauthorizedLayoutComponent } from './layout/unauthorized-layout/unauthorized-layout.component';
+import { ErrorsHandler } from './shared/services/error-handler';
 
 @NgModule({
     imports: [
         BrowserModule,
         CoreModule,
-        HttpModule,
+        HttpClientModule,
         AppRoutingModule,
         NgbModule.forRoot()
     ],
@@ -27,6 +28,10 @@ import { UnauthorizedLayoutComponent } from './layout/unauthorized-layout/unauth
         UnauthorizedLayoutComponent,
     ],
     providers: [
+        {
+            provide: ErrorHandler,
+            useClass: ErrorsHandler,
+        }
     ],
     bootstrap: [AppComponent]
 })
