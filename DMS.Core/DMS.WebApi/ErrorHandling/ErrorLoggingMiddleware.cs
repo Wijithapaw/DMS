@@ -24,10 +24,9 @@ namespace DMS.WebApi.ErrorHandling
             catch (Exception ex)
             {
                 LogError(ex);
-                throw ex;
+                throw;
             }
         }
-
 
         private static void LogError(Exception ex)
         {

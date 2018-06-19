@@ -12,7 +12,7 @@ import { AppRoutingModule } from './app.routing';
 import { CoreModule } from './core/core.module';
 import { AuthorizedLayoutComponent } from './layout/authorized-layout/authorized-layout.component';
 import { UnauthorizedLayoutComponent } from './layout/unauthorized-layout/unauthorized-layout.component';
-import { ErrorsHandler } from './shared/services/error-handler';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 @NgModule({
     imports: [
@@ -29,8 +29,8 @@ import { ErrorsHandler } from './shared/services/error-handler';
     ],
     providers: [
         {
-            provide: ErrorHandler,
-            useClass: ErrorsHandler,
+            provide: LocationStrategy,
+            useClass: HashLocationStrategy
         }
     ],
     bootstrap: [AppComponent]

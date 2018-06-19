@@ -33,7 +33,7 @@ namespace DMS.WebApi.ErrorHandling
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             string errorMsg = "Unknown error occured while processsing the request";
-            var code = HttpStatusCode.InternalServerError; // 500 if unexpected
+            var code = HttpStatusCode. InternalServerError; // 500 if unexpected
 
             if (exception is DMSException)
                 errorMsg = exception.Message;            

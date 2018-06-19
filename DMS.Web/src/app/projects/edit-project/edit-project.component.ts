@@ -15,32 +15,34 @@ export class EditProjectComponent implements OnInit {
     project: Project;
 
     constructor(private route: ActivatedRoute, private projectService: ProjectService) {
-       
+
     }
 
     ngOnInit(): void {
-        this.route.params.forEach((params: Params) =>
-        {
+        this.route.params.forEach((params: Params) => {
             let id = +params['id'];
-            if(id > 0) {
+            if (id > 0) {
                 this.projectService.getProject(id)
-                .subscribe(
-                    data => this.project = data 
-                );
+                    .subscribe(
+                        data => this.project = data
+                    );
             }
             else {
                 this.project = new Project();
             }
         });
     }
- 
+
     onSubmit(): void {
         this.projectService.updateProject(this.project)
-            .then((response) => { alert('Updated'); });
-            
+            .subscribe(
+                data => {
+                    alert('Updated');
+                }
+            );
     }
 
-    cancel() : void {
+    cancel(): void {
         alert('cancel');
     }
 }

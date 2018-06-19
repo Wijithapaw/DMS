@@ -20,7 +20,6 @@ export class ProjectService {
     }
 
     updateProject(project: Project) {
-        return this.dataService.put('projects', '',project)
-            .toPromise()
+        return this.dataService.put<void>('projects', '',project);
     }
 }
