@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 
 import { DataService } from './services/data.service';
 import { PageHeaderComponent } from './page-header/page-header.component';
-import { ErrorsHandler } from './services/error-handler';
+//import { ErrorsHandler } from './services/error-handler';
 
 @NgModule({
     imports: [
