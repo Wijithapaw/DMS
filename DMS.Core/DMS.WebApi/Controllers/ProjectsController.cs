@@ -11,7 +11,7 @@ using DMS.Domain.Dtos.Project;
 namespace DMS.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize("ManageProjects")]
+    //[Authorize("ManageProjects")]
     //[AllowAnonymous]
     public class ProjectsController : Controller
     {
@@ -44,7 +44,7 @@ namespace DMS.WebApi.Controllers
             return project;
         }
 
-        [Route("GetByCategory")]
+        [HttpGet("GetByCategory")]
         public async Task<IEnumerable<ProjectDto>> Get([FromQuery] string category)
         {
             var projectsList = await _projectsService.GetAllAsync(category);
